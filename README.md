@@ -11,6 +11,6 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 ## Techno utilisées 
 - PHP
 - MySQL
-- Bootstrap [Lien](https://bootswatch.com/sketchy/)
+- Bootstrap [Sketchy Theme](https://bootswatch.com/sketchy/)
 
 
