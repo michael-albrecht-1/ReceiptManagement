@@ -8,10 +8,13 @@
     }
 
     // traitement de l'envoi du formulaire
-    if (isset($_POST['photo']) && isset($_POST['montantTTC'])) {
-        var_dump($_POST);
-        var_dump($_FILES);
-        // $filename = $_FILES['photo'][‘name’];
+    if (isset($_POST['upload'])) {
+        // On récupère le nom de l'image
+        $image = $_FILES['photo']['name'];
+        // répertoire de stockage des images
+    	$target = "../images/".basename($image);
+
+        var_dump($image);
 
         // Date
         $date = $_POST['date'];
@@ -28,26 +31,25 @@
         // Description
         $description = mysqli_real_escape_string($conn, $_POST['description']);
         
-        $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('chemin photo2','$date',$montantTTC,'$tva','$isChecked','$description')";
-        $result = mysqli_query($conn,$query) or die(mysql_error());
-        $rows = mysqli_num_rows($result);
-        var_dump($rows);
-        /*if($rows==1){
-            echo "la création de ticket a marché";
-        }else{
-            echo "la création de ticket a PAS marché !";
-        }*/
+        $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$image','$date',$montantTTC,'$tva','$isChecked','$description')";
+        $result = mysqli_query($conn,$query);
 
+        // On importe l'image
+        if (move_uploaded_file($_FILES['photo']['tmp_name'], $target)) {
+            $msg = "Image uploaded successfully";
+        }else{
+            $msg = "Failed to upload image";
+        }
     }
 ?>
 
 <h1>Ajouter / modifier un ticket</h1>
 
-<form method="post" name="receipt">
+<form method="post" action="receipt.php" name="receipt" enctype="multipart/form-data">
     <fieldset>
     <div class="form-group row">
       <label for="photo">Prendre une photo</label>
-      <input type="file" accept="image/*" class="form-control-file photoReceipt" name = "photo" id="photo"  onchange="loadFile(event)">
+      <input type="file" accept="image/*" class="form-control-file photoReceipt" name = "photo" id="photo" capture="camera" onchange="loadFile(event)">
     </div>
 
     <div class="form-group row">
@@ -107,7 +109,7 @@
       <textarea class="form-control" id="description" name="description" rows="3" maxlength="500"></textarea>
     </div>
 
-    <button type="submit" class="btn btn-primary">Valider</button>
+    <button type="submit" name="upload" class="btn btn-primary">Valider</button>
 
 </form>
 

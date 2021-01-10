@@ -23,6 +23,7 @@
       <th scope="col">TTC</th>
       <th scope="col">Pointé</th>
       <th scope="col">Description</th>
+      <th scope="col">Test img</th>
     </tr>
   </thead>
 <?php
@@ -49,6 +50,7 @@
             echo "<td>".$row['montant_ttc']."</td>";
             echo "<td>".$isChecked."</td>";
             echo "<td>".$description."</td>";
+            echo "<td><img src='../images/".$row['photo']."' ></td>";
         echo "</tr>";
     }
 ?>

@@ -2,11 +2,11 @@
 Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ## To DO
-- intégration HTML de la liste des tickets
-- intégration HTML du détail d'un ticket
+
 
 ## Fonctionnalitées
-
+    - liste des tickets affiche un tableau avec la date, la TVA, le TTC, si les tickets ont été points ou pas et la description des tickets
+    - la page "ajout d'un ticket" permet de prendre en photo un ticket puis de renseigner son détail
 ### Authentification
 
     - il faut être authentifié pour accéder à l'application
