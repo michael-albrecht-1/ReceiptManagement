@@ -13,11 +13,13 @@
 <form data-bitwarden-watching="1">
     <fieldset>
     <div class="form-group row">
-      <label for="photo">Photo</label>
-      <input type="file" class="form-control-file" id="photo" aria-describedby="fileHelp">
-      <small id="fileHelp" class="form-text text-muted">Ajouter une photo</small>
+      <button class="btn btn-primary"><label for="photo">Prendre une photo</button></p>
+      <input type="file" accept="image/*" class="form-control-file photoReceipt" name = "photo" id="photo"  onchange="loadFile(event)">
     </div>
 
+    <div class="form-group row">
+        <img id="preload">
+    </div>
     
     <div class="form-group row">
       <label for="date">Date</label>
@@ -70,7 +72,6 @@
       <label for="exampleTextarea">Description</label>
       <textarea class="form-control" id="description" rows="3"></textarea>
     </div>
-
 
     <button type="submit" class="btn btn-primary">Valider</button>
     <button type="submit" class="btn btn-primary">Suivant</button>
