@@ -11,8 +11,8 @@
 ?>
 
 <div class="sucess">
-    <h1>Bienvenue <?php echo $_SESSION['username']??""; ?>!</h1>
-    <p>C'est votre tableau de bord.</p>
+    <h1>Liste des tickets</h1>
+    <?php echo $_SESSION['username']??""; ?>
     <a href="logout.php">Déconnexion</a>
 </div>
 
