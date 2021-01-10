@@ -10,8 +10,30 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 ### Authentification
 
     - il faut être authentifié pour accéder à l'application
-    - lors de l'installation du site on commence par créer le compte "admin"
     - les comptes sont créés uniquement par le compte "admin" dans la barre de navigation
+
+## Installer l'application
+    - cloner le repo
+    - créer un fichier dans le projet *php/config.php*
+
+    <?php
+    // FICHIER gitignore dans .git/info/exclude
+    // Informations d'identification
+    define('DB_SERVER', 'localhost');
+    define('DB_USERNAME', 'USER');
+    define('DB_PASSWORD', 'PASSWORD');
+    define('DB_NAME', 'receiptmanagement');
+    
+    // Connexion à la base de données MySQL 
+    $conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    
+    // Vérifier la connexion
+    if($conn === false){
+        die("ERREUR : Impossible de se connecter. " . mysqli_connect_error());
+    }
+    ?>
+
+    - lors de la première connexion il on vous demande de créer le compte "admin"
 
 ## Techno utilisées 
 - PHP
