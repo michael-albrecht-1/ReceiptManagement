@@ -6,7 +6,12 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 - intégration HTML du détail d'un ticket
 
 ## Fonctionnalitées
-- **authentification** : les comptes sont créés uniquement par le compte "admin" via la page **register.php**. Il faut être authentifié pour accéder à l'application. 
+
+### Authentification
+
+    - il faut être authentifié pour accéder à l'application
+    - lors de l'installation du site on commence par créer le compte "admin"
+    - les comptes sont créés uniquement par le compte "admin" dans la barre de navigation
 
 ## Techno utilisées 
 - PHP

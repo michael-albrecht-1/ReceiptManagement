@@ -8,11 +8,7 @@
     }
 ?>
 
-
-<h1>Liste des tickets</h1>
-
-
-
+<h1>Ajouter / modifier un ticket</h1>
 
 
 <?php

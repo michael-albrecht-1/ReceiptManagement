@@ -3,10 +3,7 @@
     require __DIR__ . '/inc/header.tpl.php';
     require __DIR__ . '/config.php';
 
-    // On accède à la session que si on est connecté avec l'utilisateur admin
-    // Initialiser la session
-    session_start();
-    // Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
+    // Vérifiez que l'utilisateur est connecté avec le compte "admin", sinon redirigez-le vers la page de connexion
     if (true) {
         if ($_SESSION['username'] !== 'admin') {
             header("Location: logout.php");
@@ -30,7 +27,7 @@
         $res = mysqli_query($conn, $query);
         if($res){
         echo "<div class='sucess'>
-                <h3>Vous êtes inscrit avec succès.</h3>
+                <h3>Le compte a été créé avec succès.</h3>
                 <p>Cliquez ici pour vous <a href='login.php'>connecter</a></p>
         </div>";
         }
@@ -52,7 +49,6 @@
             <input type="password" class="form-control" name="password" placeholder="Mot de passe" required />
         </div>
         <button type="submit" name="submit" class="btn btn-primary">S'inscrire</button>
-        <p class="box-register">Déjà inscrit? <a href="login.php">Connectez-vous ici</a></p>
     </form>
 
 <?php } 

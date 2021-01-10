@@ -8,11 +8,7 @@
     }
 ?>
 
-
-<h1>Liste des tickets</h1>
-
-
-
+<h1>Export d'une sélection</h1>
 
 
 <?php
