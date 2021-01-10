@@ -16,6 +16,7 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
     - cloner le repo
     - créer un fichier dans le projet *php/config.php*
 
+
     <?php
     // FICHIER gitignore dans .git/info/exclude
     // Informations d'identification
@@ -23,10 +24,10 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
     define('DB_USERNAME', 'USER');
     define('DB_PASSWORD', 'PASSWORD');
     define('DB_NAME', 'receiptmanagement');
-    
+
     // Connexion à la base de données MySQL 
     $conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-    
+
     // Vérifier la connexion
     if($conn === false){
         die("ERREUR : Impossible de se connecter. " . mysqli_connect_error());
