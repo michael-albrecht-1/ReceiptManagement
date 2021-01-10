@@ -16,6 +16,7 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
     - cloner le repo
     - créer un fichier dans le projet *php/config.php*
 
+```
     <?php
     // FICHIER gitignore dans .git/info/exclude
     // Informations d'identification
@@ -32,6 +33,7 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
         die("ERREUR : Impossible de se connecter. " . mysqli_connect_error());
     }
     ?>
+```
 
     - lors de la première connexion il on vous demande de créer le compte "admin"
 
