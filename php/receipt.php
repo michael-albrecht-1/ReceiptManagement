@@ -6,11 +6,13 @@
     if (!isset($_SESSION['username'])) {
         header("Location: login.php");
     }
+
+
 ?>
 
 <h1>Ajouter / modifier un ticket</h1>
 
-<form data-bitwarden-watching="1">
+<form method="post" name="receipt">
     <fieldset>
     <div class="form-group row">
       <label for="photo">Prendre une photo</label>
@@ -23,30 +25,31 @@
     
     <div class="form-group row">
       <label for="date">Date</label>
-      <input type="text" class="form-control" id="date" placeholder="Saisir la Date">
+      <input type="date" class="form-control" id="date" name="date"  value="<?= date("Y-m-d") ?>" required>
     </div>
     
     <div class="form-group row">
       <label for="montant">Montant TTC</label>
-      <input type="text" class="form-control" id="montant" placeholder="Saisir le montant TTC">
-    </div>    
-
-    <div class="form-group row">
-      <label for="tva">Taux de TVA</label>
-      <input type="text" class="form-control" id="tva" placeholder="Saisir le taux de TVA">
+      <input type="number" class="form-control" id="montantTTC" name="montantTTC" placeholder="Saisir le montant TTC" required>
     </div>    
 
     <fieldset class="form-group">
       <legend>TVA</legend>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="tva" id="tva1" value="tva1" checked="">
+          <input type="radio" class="form-check-input" name="tva" id="tva1" value="tva1">
           5.5
         </label>
       </div>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="tva" id="tva2" value="tva2">
+          <input type="radio" class="form-check-input" name="tva" id="tva2" value="tva2" checked="">
+          10
+        </label>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" name="tva" id="tva3" value="tva3">
           20
         </label>
       </div>
@@ -70,11 +73,10 @@
 
     <div class="form-group">
       <label for="exampleTextarea">Description</label>
-      <textarea class="form-control" id="description" rows="3"></textarea>
+      <textarea class="form-control" id="description" name="description" rows="3"></textarea>
     </div>
 
     <button type="submit" class="btn btn-primary">Valider</button>
-    <button type="submit" class="btn btn-primary">Suivant</button>
 
 </form>
 
