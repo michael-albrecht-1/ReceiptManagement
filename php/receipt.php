@@ -23,8 +23,7 @@
         $tva = $_POST['tva'];
 
         // Pointé ou non en compta
-        $isChecked = boolval($_POST['checked']);
-        var_dump($isChecked);
+        $_POST['checked'] === "true" ? $isChecked = 1 : $isChecked = 0;
 
         // Description
         $description = mysqli_real_escape_string($conn, $_POST['description']);
@@ -91,13 +90,13 @@
       <legend>Pointé</legend>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="checked" id="oui" value="oui">
+          <input type="radio" class="form-check-input" name="checked" id="oui" value="true">
           oui
         </label>
       </div>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="checked" id="non" value="non" checked="">
+          <input type="radio" class="form-check-input" name="checked" id="non" value="false" checked="">
           non
         </label>
       </div>
