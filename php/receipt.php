@@ -11,11 +11,10 @@
     if (isset($_POST['photo']) && isset($_POST['montantTTC'])) {
         var_dump($_POST);
         var_dump($_FILES);
-        echo "traitement";
         // $filename = $_FILES['photo'][‘name’];
 
         // Date
-        $date = "2020-10-10";
+        $date = $_POST['date'];
 
         // Montant TTC
         $montantTTC = $_POST['montantTTC'];
@@ -24,19 +23,21 @@
         $tva = $_POST['tva'];
 
         // Pointé ou non en compta
-        $isChecked = $_POST['checked'];
+        $isChecked = boolval($_POST['checked']);
+        var_dump($isChecked);
 
         // Description
         $description = mysqli_real_escape_string($conn, $_POST['description']);
         
-        $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('chemin photo2','2020-10-10',10,'$tva',false,'$description')";
+        $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('chemin photo2','$date',$montantTTC,'$tva','$isChecked','$description')";
         $result = mysqli_query($conn,$query) or die(mysql_error());
         $rows = mysqli_num_rows($result);
-        if($rows==1){
+        var_dump($rows);
+        /*if($rows==1){
             echo "la création de ticket a marché";
         }else{
             echo "la création de ticket a PAS marché !";
-        }
+        }*/
 
     }
 ?>
@@ -61,7 +62,7 @@
     
     <div class="form-group row">
       <label for="montant">Montant TTC</label>
-      <input type="number" class="form-control" id="montantTTC" name="montantTTC" placeholder="Saisir le montant TTC" required>
+      <input type="text" class="form-control" id="montantTTC" name="montantTTC" placeholder="Saisir le montant TTC" required>
     </div>    
 
     <fieldset class="form-group">
