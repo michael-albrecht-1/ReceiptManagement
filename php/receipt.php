@@ -13,7 +13,7 @@
 <form data-bitwarden-watching="1">
     <fieldset>
     <div class="form-group row">
-      <button class="btn btn-primary"><label for="photo">Prendre une photo</button></p>
+      <label for="photo">Prendre une photo</label>
       <input type="file" accept="image/*" class="form-control-file photoReceipt" name = "photo" id="photo"  onchange="loadFile(event)">
     </div>
 
