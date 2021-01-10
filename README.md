@@ -15,8 +15,8 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 ## Installer l'application
     - cloner le repo
     - créer un fichier dans le projet *php/config.php*
-    
-```
+
+```PHP
     <?php
     // FICHIER gitignore dans .git/info/exclude
     // Informations d'identification
