@@ -7,7 +7,38 @@
         header("Location: login.php");
     }
 
+    // traitement de l'envoi du formulaire
+    if (isset($_POST['photo']) && isset($_POST['montantTTC'])) {
+        var_dump($_POST);
+        var_dump($_FILES);
+        echo "traitement";
+        // $filename = $_FILES['photo'][‘name’];
 
+        // Date
+        $date = "2020-10-10";
+
+        // Montant TTC
+        $montantTTC = $_POST['montantTTC'];
+
+        // Taux de TVA
+        $tva = $_POST['tva'];
+
+        // Pointé ou non en compta
+        $isChecked = $_POST['checked'];
+
+        // Description
+        $description = mysqli_real_escape_string($conn, $_POST['description']);
+        
+        $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('chemin photo2','2020-10-10',10,'$tva',false,'$description')";
+        $result = mysqli_query($conn,$query) or die(mysql_error());
+        $rows = mysqli_num_rows($result);
+        if($rows==1){
+            echo "la création de ticket a marché";
+        }else{
+            echo "la création de ticket a PAS marché !";
+        }
+
+    }
 ?>
 
 <h1>Ajouter / modifier un ticket</h1>
@@ -73,7 +104,7 @@
 
     <div class="form-group">
       <label for="exampleTextarea">Description</label>
-      <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+      <textarea class="form-control" id="description" name="description" rows="3" maxlength="500"></textarea>
     </div>
 
     <button type="submit" class="btn btn-primary">Valider</button>
