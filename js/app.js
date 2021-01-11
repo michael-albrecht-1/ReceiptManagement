@@ -16,7 +16,7 @@ let handleSelectChange = (event) => {
     let tvaNode1 = document.querySelector("#tva1");
     let tvaNode2 = document.querySelector("#tva2");
     let tvaNode3 = document.querySelector("#tva3");
-    let tvaNode3 = document.querySelector("#tva3");
+    let tvaNode4 = document.querySelector("#tva4");
     
     switch (event.target.value) {
         case 0:
