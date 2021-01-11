@@ -34,15 +34,17 @@
 ?>
 <table class="table table-hover">
     <form method="get" action="">
-        <div class="form-group row">
-            <label for="ischecked">Pointé</label>
-            <select multiple size = 2 class="form-control" name="isChecked[]">
-                <option value="true">oui</option>
-                <option value="false">non</option>
-            </select>
-        </div>
+        <div class="row">
+            <div class="form-group isChecked">
+                <label for="ischecked">Pointé</label>
+                <select multiple size = 2 class="form-control" name="isChecked[]">
+                    <option value="true">oui</option>
+                    <option value="false">non</option>
+                </select>
+            </div>
 
-        <button type="submit" name="filter" class="btn btn-primary">Valider</button>
+            <button type="submit" name="filter" class="btn btn-primary submitListReceiptFilters">Valider</button>
+        </div> 
     </form>
 <thead>
     <tr class="table-dark">
