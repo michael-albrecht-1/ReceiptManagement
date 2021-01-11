@@ -1,6 +1,7 @@
 <?php
     require __DIR__ . '/inc/header.tpl.php';
     require __DIR__ . '/config.php';
+    require __DIR__ . '/inc/data.php';
 
     // Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
     if (!isset($_SESSION['username'])) {
@@ -38,9 +39,9 @@
         
         // On importe l'image
         if (move_uploaded_file($_FILES['photo']['tmp_name'], $target) && $result) {
-            $msg = "<p class=\"text-success text-center\">Ticket enregistré</p>";
+            $msg = '<div class="col-lg-4 alert alert-success alert-dismissible text-center"><button type="button" class="close" data-bs-dismiss="alert">&times;</button>Ticket enregistré</div>';
         }else{
-            $msg = "<p class=\"text-danger text-center\">Ça n'a pas fonctionné !</p>";
+            $msg = '<div class="col-lg-4 alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-bs-dismiss="alert">&times;</button>Ça n\'a pas fonctionné !</div>';
         }
     }
 ?>
@@ -53,7 +54,7 @@
     <fieldset>
     <div class="form-group row">
       <label for="photo">Prendre une photo</label>
-      <input type="file" accept="image/*" class="form-control-file photoReceipt" name = "photo" id="photo" capture="camera" onchange="loadFile(event) form="receipt" required>
+      <input type="file" accept="image/*" class="form-control-file photoReceipt" name = "photo" id="photo" capture="camera" onchange="loadFile(event)" required>
     </div>
 
     <div class="form-group row">
@@ -67,12 +68,15 @@
     
     <div class="form-group row">
       <label for="type">Type</label>
-      <select class="form-control" id="type" name="type">
-        <option value="1">Restaurant</option>
-        <option value="2">Gasoil</option>
-        <option value="3">Hôtel</option>
-        <option value="4">Péage</option>
-        <option value="5">Autre</option>
+      <select class="form-control" id="type" name="type"> 
+        <?php foreach ($receiptTypes as $index => $type){ 
+            $selected = "";
+            if (isset($_POST['type'])) {
+                $_POST['type'] == $index ? $selected = "selected" : $selected = ""; 
+            } 
+            echo "<option value=" . $index . " " . $selected . ">" . $type . "</option>";
+        }
+        ?>
       </select>
     </div>
 

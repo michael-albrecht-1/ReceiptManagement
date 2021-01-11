@@ -2,6 +2,7 @@
     require __DIR__ . '/inc/header.tpl.php';
     require __DIR__ . '/inc/functions.php';
     require __DIR__ . '/config.php';
+    require __DIR__ . '/inc/data.php';
 
     // Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
     if (!isset($_SESSION['username'])) {
@@ -59,26 +60,10 @@
 <?php
     while ($row = mysqli_fetch_array($showReceipts)) {
         
-        // type
-        switch ($row['type']) {
-            case '1':
-                $type = "restaurant";
-                break;
-            case '2':
-                $type = "gasoil";
-                break;
-            case '3':
-                $type = "hôtel";
-                break;
-            case '4':
-                $type = "péage";
-                break;
-            case '5':
-                $type = "autre";
-                break;
-            default:
-                $type = "autre";
-                break;
+        foreach ($receiptTypes as $index => $type) {
+            if ($index == $row['type']) {
+                $receiptType = $type;
+            }
         }
 
         // TVA
@@ -101,7 +86,7 @@
         
         echo "<tr>";
             echo "<td>".$row['date_emission']."</td>";
-            echo "<td>".$type."</td>";
+            echo "<td>".$receiptType."</td>";
             echo "<td>".$tva."</td>";
             echo "<td>".$row['montant_ttc']."</td>";
             echo "<td>".$isChecked."</td>";
