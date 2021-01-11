@@ -15,8 +15,6 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ## Fonctionnalitées
 
-- *liste des tickets* : affiche un tableau avec la date d'emission du ticket, le type de ticket (restaurant, gasoil, etc..),  le taux de TVA, le total TTC, si les tickets ont été pointés ou pas et une description optionnelle.
-- la page "ajout d'un ticket" permet de prendre en photo un ticket puis de renseigner son détail
 ### Authentification
 
 - il faut être authentifié pour accéder à l'application
@@ -27,7 +25,8 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 - affiche un tableau avec la date d'emission du ticket, le type de ticket (restaurant, gasoil, etc..),  le taux de TVA, le total TTC, si les tickets ont été pointés ou pas et une description optionnelle
 - on peut si ils sont pointés ou non (par défaut on affiche tout)
 
-
+### Ajout d'un ticket
+- prendre en photo un ticket puis de renseigner son détail
 
 ## Installer l'application
 - cloner le repo
