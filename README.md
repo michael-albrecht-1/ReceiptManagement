@@ -3,7 +3,6 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ## To DO
 - modif d'un ticket
-- filtrer sur la liste des tickets si ils sont pointés ou non (non par défaut ?)
 - gérer des profils ? utilisateur/comptable
 - afficher si un ticket a bien été uploadé
 - garder le dernier type choisi dans le formulaire d'ajout d'un ticket
@@ -15,12 +14,20 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 
 ## Fonctionnalitées
+
 - *liste des tickets* : affiche un tableau avec la date d'emission du ticket, le type de ticket (restaurant, gasoil, etc..),  le taux de TVA, le total TTC, si les tickets ont été pointés ou pas et une description optionnelle.
 - la page "ajout d'un ticket" permet de prendre en photo un ticket puis de renseigner son détail
 ### Authentification
 
 - il faut être authentifié pour accéder à l'application
 - les comptes sont créés uniquement par le compte "admin" dans la barre de navigation
+
+### Liste des tickets
+
+- affiche un tableau avec la date d'emission du ticket, le type de ticket (restaurant, gasoil, etc..),  le taux de TVA, le total TTC, si les tickets ont été pointés ou pas et une description optionnelle
+- on peut si ils sont pointés ou non (par défaut on affiche tout)
+
+
 
 ## Installer l'application
 - cloner le repo

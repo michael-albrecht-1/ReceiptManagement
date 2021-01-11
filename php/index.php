@@ -13,9 +13,37 @@
 <h1>Liste des tickets</h1>
 
 <?php 
-    $showReceipts = mysqli_query($conn, "SELECT * FROM receipts");
+
+    
+    $req = "SELECT * FROM receipts";
+
+    if ( isset($_GET['filter']) ) 
+    {
+        if ( isset($_GET['isChecked']) )
+        if ( count($_GET['isChecked']) == 1) {
+            $req = $req . " WHERE checked = " . $_GET['isChecked'][0];
+        } elseif (count($_GET['isChecked']) == 2) {
+            $req = $req . " WHERE checked = " . $_GET['isChecked'][0] . " or " . "checked = " . $_GET['isChecked'][1]; 
+        }
+    }
+
+
+ 
+    $showReceipts = mysqli_query($conn, $req);
+
 ?>
 <table class="table table-hover">
+    <form method="get" action="">
+        <div class="form-group row">
+            <label for="ischecked">Pointé</label>
+            <select multiple size = 2 class="form-control" name="isChecked[]">
+                <option value="true">oui</option>
+                <option value="false">non</option>
+            </select>
+        </div>
+
+        <button type="submit" name="filter" class="btn btn-primary">Valider</button>
+    </form>
 <thead>
     <tr class="table-dark">
       <th scope="col">Date</th>
