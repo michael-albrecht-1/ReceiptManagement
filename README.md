@@ -2,19 +2,29 @@
 Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ## To DO
+- modif d'un ticket
+- filtrer sur la liste des tickets si ils sont pointés ou non (non par défaut ?)
+- gérer des profils ? utilisateur/comptable
+- afficher si un ticket a bien été uploadé
+- garder le dernier type choisi dans le formulaire d'ajout d'un ticket
+- présellectionner un taux de TVA en fonction du type choisi :  RESTAURANT->10 / GASOIL->20 / HOTEL->TVA20/PEAGE->INTRA / AUTRE 20
+- page export ou ajouter des filtres de date sur la page de liste des tickets et un bouton export ?
+- export CSV : DATE // TYPE // FOURNISSEUR // MONTANT HT // TAUX TVA // MONTANT TVA // MONTANT TTC // VALIDATION FINAL
+
+
 
 
 ## Fonctionnalitées
-    - liste des tickets affiche un tableau avec la date, la TVA, le TTC, si les tickets ont été points ou pas et la description des tickets
-    - la page "ajout d'un ticket" permet de prendre en photo un ticket puis de renseigner son détail
+- *liste des tickets* : affiche un tableau avec la date d'emission du ticket, le type de ticket (restaurant, gasoil, etc..),  le taux de TVA, le total TTC, si les tickets ont été pointés ou pas et une description optionnelle.
+- la page "ajout d'un ticket" permet de prendre en photo un ticket puis de renseigner son détail
 ### Authentification
 
-    - il faut être authentifié pour accéder à l'application
-    - les comptes sont créés uniquement par le compte "admin" dans la barre de navigation
+- il faut être authentifié pour accéder à l'application
+- les comptes sont créés uniquement par le compte "admin" dans la barre de navigation
 
 ## Installer l'application
-    - cloner le repo
-    - créer un fichier dans le projet *php/config.php*
+- cloner le repo
+- créer un fichier dans le projet *php/config.php*
 
 ```PHP
     <?php
@@ -35,7 +45,7 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
     ?>
 ```
 
-    - lors de la première connexion il on vous demande de créer le compte "admin"
+- lors de la première connexion il on vous demande de créer le compte "admin"
 
 ## Techno utilisées 
 - PHP

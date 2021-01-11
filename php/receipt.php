@@ -17,6 +17,11 @@
         // Date
         $date = $_POST['date'];
 
+        // Type
+        $type =  $_POST['type'];
+
+        var_dump($type);
+
         // Montant TTC
         $amountTTC = $_POST['amountTTC'];
 
@@ -29,7 +34,7 @@
         // Description
         $description = mysqli_real_escape_string($conn, $_POST['description']);
         
-        $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date',$amountTTC,'$tva','$isChecked','$description')";
+        $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `type`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$type',$amountTTC,'$tva','$isChecked','$description')";
         $result = mysqli_query($conn,$query);
 
         // On importe l'image
@@ -59,6 +64,17 @@
       <input type="date" class="form-control" id="date" name="date"  value="<?= date("Y-m-d") ?>" required>
     </div>
     
+    <div class="form-group row">
+      <label for="type">Type</label>
+      <select class="form-control" id="type" name="type">
+        <option value="1">Restaurant</option>
+        <option value="2">Gasoil</option>
+        <option value="3">Hôtel</option>
+        <option value="4">Péage</option>
+        <option value="5">Autre</option>
+      </select>
+    </div>
+
     <div class="form-group row">
       <label for="montant">Montant TTC</label>
       <input type="text" class="form-control" id="amountTTC" name="amountTTC" placeholder="Saisir le montant TTC" required>

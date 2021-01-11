@@ -19,6 +19,7 @@
 <thead>
     <tr class="table-dark">
       <th scope="col">Date</th>
+      <th scope="col">Type</th>
       <th scope="col">TVA</th>
       <th scope="col">TTC</th>
       <th scope="col">Pointé</th>
@@ -28,6 +29,29 @@
 <?php
     while ($row = mysqli_fetch_array($showReceipts)) {
         
+        // type
+        switch ($row['type']) {
+            case '1':
+                $type = "restaurant";
+                break;
+            case '2':
+                $type = "gasoil";
+                break;
+            case '3':
+                $type = "hôtel";
+                break;
+            case '4':
+                $type = "péage";
+                break;
+            case '5':
+                $type = "autre";
+                break;
+            default:
+                $type = "autre";
+                break;
+        }
+
+        // TVA
         if ($row['tva'] =='tva1') 
         {
             $tva = "5.5";
@@ -39,12 +63,15 @@
             $tva = "20";
         }
 
+        // Is checked ?
         $row['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
 
+        // description
         $description = truncate($row['description'], 40);
         
         echo "<tr>";
             echo "<td>".$row['date_emission']."</td>";
+            echo "<td>".$type."</td>";
             echo "<td>".$tva."</td>";
             echo "<td>".$row['montant_ttc']."</td>";
             echo "<td>".$isChecked."</td>";
