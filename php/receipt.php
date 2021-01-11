@@ -10,28 +10,26 @@
     // traitement de l'envoi du formulaire
     if (isset($_POST['upload'])) {
         // On récupère le nom de l'image
-        $image = $_FILES['photo']['name'];
+        $picture = $_FILES['photo']['name'];
         // répertoire de stockage des images
-    	$target = "../images/".basename($image);
-
-        var_dump($image);
+    	$target = "../pictures/".basename($picture);
 
         // Date
         $date = $_POST['date'];
 
         // Montant TTC
-        $montantTTC = $_POST['montantTTC'];
+        $amountTTC = $_POST['amountTTC'];
 
         // Taux de TVA
         $tva = $_POST['tva'];
 
         // Pointé ou non en compta
-        $_POST['checked'] === "true" ? $isChecked = 1 : $isChecked = 0;
+        $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
 
         // Description
         $description = mysqli_real_escape_string($conn, $_POST['description']);
         
-        $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$image','$date',$montantTTC,'$tva','$isChecked','$description')";
+        $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date',$amountTTC,'$tva','$isChecked','$description')";
         $result = mysqli_query($conn,$query);
 
         // On importe l'image
@@ -63,7 +61,7 @@
     
     <div class="form-group row">
       <label for="montant">Montant TTC</label>
-      <input type="text" class="form-control" id="montantTTC" name="montantTTC" placeholder="Saisir le montant TTC" required>
+      <input type="text" class="form-control" id="amountTTC" name="amountTTC" placeholder="Saisir le montant TTC" required>
     </div>    
 
     <fieldset class="form-group">
@@ -92,13 +90,13 @@
       <legend>Pointé</legend>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="checked" id="oui" value="true">
+          <input type="radio" class="form-check-input" name="ischecked" id="oui" value="true">
           oui
         </label>
       </div>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="checked" id="non" value="false" checked="">
+          <input type="radio" class="form-check-input" name="ischecked" id="non" value="false" checked="">
           non
         </label>
       </div>
