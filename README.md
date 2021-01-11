@@ -4,7 +4,6 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 ## To DO
 - modif d'un ticket
 - gérer des profils ? utilisateur/comptable
-- afficher si un ticket a bien été uploadé
 - garder le dernier type choisi dans le formulaire d'ajout d'un ticket
 - présellectionner un taux de TVA en fonction du type choisi :  RESTAURANT->10 / GASOIL->20 / HOTEL->TVA20/PEAGE->INTRA / AUTRE 20
 - page export ou ajouter des filtres de date sur la page de liste des tickets et un bouton export ?
@@ -27,6 +26,7 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ### Ajout d'un ticket
 - prendre en photo un ticket puis de renseigner son détail
+- quand on valide le formulaire on peut directement enchainé avec un autre ticket
 
 ## Installer l'application
 - cloner le repo

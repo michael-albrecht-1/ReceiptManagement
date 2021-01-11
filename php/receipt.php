@@ -20,8 +20,6 @@
         // Type
         $type =  $_POST['type'];
 
-        var_dump($type);
-
         // Montant TTC
         $amountTTC = $_POST['amountTTC'];
 
@@ -37,22 +35,25 @@
         $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `type`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$type',$amountTTC,'$tva','$isChecked','$description')";
         $result = mysqli_query($conn,$query);
 
+        
         // On importe l'image
-        if (move_uploaded_file($_FILES['photo']['tmp_name'], $target)) {
-            $msg = "Image uploaded successfully";
+        if (move_uploaded_file($_FILES['photo']['tmp_name'], $target) && $result) {
+            $msg = "<p class=\"text-success text-center\">Ticket enregistré</p>";
         }else{
-            $msg = "Failed to upload image";
+            $msg = "<p class=\"text-danger text-center\">Ça n'a pas fonctionné !</p>";
         }
     }
 ?>
 
 <h1>Ajouter / modifier un ticket</h1>
 
+<?= $msg ?? "" ?>
+
 <form method="post" action="receipt.php" name="receipt" enctype="multipart/form-data">
     <fieldset>
     <div class="form-group row">
       <label for="photo">Prendre une photo</label>
-      <input type="file" accept="image/*" class="form-control-file photoReceipt" name = "photo" id="photo" capture="camera" onchange="loadFile(event)">
+      <input type="file" accept="image/*" class="form-control-file photoReceipt" name = "photo" id="photo" capture="camera" onchange="loadFile(event) form="receipt" required>
     </div>
 
     <div class="form-group row">

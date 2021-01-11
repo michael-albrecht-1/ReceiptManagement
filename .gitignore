@@ -1,2 +1,4 @@
-pictures/*.*
+pictures/*.jpg
+pictures/*.jpeg
+pictures/*.png
 php/config.php

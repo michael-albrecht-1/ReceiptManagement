@@ -10,3 +10,7 @@ h1 {
 .isChecked {
     width: 6em;
 }
+
+#preload {
+    width: 100vw;
+}
