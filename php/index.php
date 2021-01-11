@@ -69,11 +69,14 @@
         // TVA
         if ($row['tva'] =='tva1') 
         {
-            $tva = "5.5";
+            $tva = "0";
         } elseif ($row['tva'] =='tva2')
         {
-            $tva = "10";
+            $tva = "5.5";
         } elseif ($row['tva'] =='tva3')
+        {
+            $tva = "10";
+        }elseif ($row['tva'] =='tva4')
         {
             $tva = "20";
         }

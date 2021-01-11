@@ -90,18 +90,24 @@
       <div class="form-check">
         <label class="form-check-label">
           <input type="radio" class="form-check-input" name="tva" id="tva1" value="tva1">
+          0
+        </label>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" name="tva" id="tva2" value="tva2">
           5.5
         </label>
       </div>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="tva" id="tva2" value="tva2" checked="">
+          <input type="radio" class="form-check-input" name="tva" id="tva3" value="tva3" checked="">
           10
         </label>
       </div>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="tva" id="tva3" value="tva3">
+          <input type="radio" class="form-check-input" name="tva" id="tva4" value="tva4">
           20
         </label>
       </div>
