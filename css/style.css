@@ -15,6 +15,10 @@ h1 {
     width: 6em;
 }
 
+.isChecked select {
+    overflow-y: auto;
+}
+
 #preload {
     width: 100vw;
 }

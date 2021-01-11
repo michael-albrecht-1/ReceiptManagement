@@ -78,6 +78,10 @@
             $tva = "20";
         }
 
+        // TTC amount
+        $fmt = new NumberFormatter( 'de_DE', NumberFormatter::CURRENCY );
+        $amount = $fmt->formatCurrency($row['montant_ttc'], "EUR");
+
         // Is checked ?
         $row['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
 
@@ -85,12 +89,12 @@
         $description = truncate($row['description'], 40);
         
         echo "<tr>";
-            echo "<td>".$row['date_emission']."</td>";
-            echo "<td>".$receiptType."</td>";
-            echo "<td>".$tva."</td>";
-            echo "<td>".$row['montant_ttc']."</td>";
-            echo "<td>".$isChecked."</td>";
-            echo "<td>".$description."</td>";
+            echo "<td>" . $row['date_emission'] . "</td>";
+            echo "<td>" . $receiptType . "</td>";
+            echo "<td>" . $tva . "</td>";
+            echo "<td>" . $amount . "</td>";
+            echo "<td>" . $isChecked . "</td>";
+            echo "<td>" . $description . "</td>";
         echo "</tr>";
     }
 ?>
