@@ -10,8 +10,23 @@
 
     // en modif d'un ticket, on récupère le nom de la photo
     if ( isset($_GET['photo']) ) {
-      $target = "../pictures/".basename($_GET['photo']);
+      $srcPhoto = "../pictures/".basename($_GET['photo']);
     }
+
+    // en modif d'un ticket récupérer si c'est pointé ou pas
+       if (isset($_GET['isChecked'])) {
+        if ($_GET['isChecked'] == "oui") {
+          $isCheckedYes = "checked";
+          $isCheckedNo = "";
+        } else {
+          $isCheckedYes = "";
+          $isCheckedNo = "checked";
+        }
+       } else {
+        $isCheckedYes = "";
+        $isCheckedNo = "checked";
+       }
+
 
     // traitement de l'envoi du formulaire
     if (isset($_POST['upload'])) {
@@ -77,7 +92,7 @@
     </div>
 
     <div class="form-group row">
-        <img id="preload" src="<?= $target ?? "" ?>">
+        <img id="preload" src="<?= $srcPhoto ?? "" ?>">
     </div>
     
   
@@ -115,25 +130,25 @@
       <legend>TVA</legend>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="tva" id="tva1" value="tva1">
+          <input type="radio" class="form-check-input tva-check" name="tva" id="tva1" value="tva1">
           0
         </label>
       </div>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="tva" id="tva2" value="tva2">
+          <input type="radio" class="form-check-input tva-check" name="tva" id="tva2" value="tva2">
           5.5
         </label>
       </div>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="tva" id="tva3" value="tva3" checked="">
+          <input type="radio" class="form-check-input tva-check" name="tva" id="tva3" value="tva3">
           10
         </label>
       </div>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="tva" id="tva4" value="tva4">
+          <input type="radio" class="form-check-input tva-check" name="tva" id="tva4" value="tva4">
           20
         </label>
       </div>
@@ -143,13 +158,13 @@
       <legend>Pointé</legend>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="ischecked" id="oui" value="true">
+          <input type="radio" class="form-check-input" name="ischecked" id="oui" value="true" <?= $isCheckedYes ?>>
           oui
         </label>
       </div>
       <div class="form-check">
         <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="ischecked" id="non" value="false" checked="">
+          <input type="radio" class="form-check-input" name="ischecked" id="non" value="false" <?= $isCheckedNo ?>>
           non
         </label>
       </div>
@@ -157,7 +172,7 @@
 
     <div class="form-group">
       <label for="exampleTextarea">Description</label>
-      <textarea class="form-control" id="description" name="description" rows="3" maxlength="500"></textarea>
+      <textarea class="form-control" id="description" name="description" rows="3" maxlength="500"><?= $_GET['description'] ?? "" ?></textarea>
     </div>
 
     <button type="submit" name="upload" class="btn btn-primary">Valider</button>

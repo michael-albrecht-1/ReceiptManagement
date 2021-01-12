@@ -68,5 +68,48 @@ window.addEventListener("DOMContentLoaded", () => {
             handleSelectChange(element.value);
         }
     });
-    // handleSelectChange();
 })
+
+
+// select the rigth TVA in case of update receipt - en travaux
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const tva = urlParams.get('tva');
+
+if (tva != null) {
+    
+    console.log("on essaye de récup le taux de tva en update de ticket");
+    let tvaCheck = document.querySelectorAll(".tva-check");
+    console.log("param : " + tva);
+
+    let idTva;
+    switch (tva) {
+        case "0":
+            idTva = "TVA1";
+            break;
+        case "5.5":
+            idTva = "TVA2";
+            break;
+        case "10":
+            idTva = "TVA3";
+            break;
+        case "20":
+            idTva = "TVA4";
+            break;
+        default:
+            idTva = "TVA4"
+            break;
+    }
+
+    tvaCheck.forEach( (node) => {
+        if (node.id == idTva) {
+            node.checked = true
+        }   else {
+            node.checked = false;
+        }
+
+
+    })
+}
+
+    
