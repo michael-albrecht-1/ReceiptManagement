@@ -60,12 +60,13 @@ selectNode.addEventListener("change", (event) => {
 });
 
 
-// select the right TVA code on when DOM is loaded ! en travaux
+// select the right TVA code on when DOM is loaded 
 window.addEventListener("DOMContentLoaded", () => {
-    console.log("load");
-    optionNodes = document.querySelectorAll("#type options");
+    optionNodes = document.querySelectorAll("option");
     optionNodes.forEach(element => {
-        console.log(element);
+        if (element.selected === true) {
+            handleSelectChange(element.value);
+        }
     });
     // handleSelectChange();
 })

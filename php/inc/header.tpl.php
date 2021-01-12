@@ -37,7 +37,7 @@
                                     <a class="dropdown-item" href="logout.php">Déconnexion</a>
                                     <?php if ($_SESSION['username'] == "admin"): ?>
                                         <a class="dropdown-item" href="register.php">Créer un nouveau compte</a>
-                                    <?php endif ?>
+                                    <?php endif; ?>
                                 </div>
                             </li>
                         </ul>
@@ -48,5 +48,5 @@
 
 
             
-        <?php endif ?>
+        <?php endif; ?>
         

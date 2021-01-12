@@ -4,13 +4,9 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 ## To DO
 - modif d'un ticket
 - gérer des profils ? utilisateur/comptable
-- présellectionner un taux de TVA en fonction du type choisi :  RESTAURANT->10 / GASOIL->20 / HOTEL->TVA20/PEAGE->INTRA / AUTRE 20
 - page export ou ajouter des filtres de date sur la page de liste des tickets et un bouton export ?
 - export CSV : DATE // TYPE // FOURNISSEUR // MONTANT HT // TAUX TVA // MONTANT TVA // MONTANT TTC // VALIDATION FINAL
 - dans le formulaire d'ajout d'un ticket returer le champs "pointéé ?
-
-
-
 
 ## Fonctionnalitées
 
@@ -28,6 +24,7 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 - prendre en photo un ticket puis de renseigner son détail
 - quand on valide le formulaire on peut directement enchainer avec un autre ticket
 - lors de la saisie de plusieurs tickets consécutifs il conserve le dernier type choisi
+- en fonction du type choisi l'application préselectionne un taux de TVA (RESTAURANT->10 / GASOIL->20 / HOTEL->TVA20/PEAGE->INTRA / AUTRE 20)
 
 ## Installer l'application
 - cloner le repo
