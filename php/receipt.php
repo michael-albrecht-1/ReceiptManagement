@@ -138,6 +138,7 @@
 
 </form>
 
+<script src="../js/uploadReceipt.js"></script>
 
 <?php
     require __DIR__ . '/inc/footer.tpl.php';

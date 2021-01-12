@@ -103,7 +103,7 @@
 ?>
 </table>
 
-
+<script src="../js/receiptList.js"></script>
 <?php
     require __DIR__ . '/inc/footer.tpl.php';
 ?>
