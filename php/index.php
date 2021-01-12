@@ -55,6 +55,7 @@
       <th scope="col">TTC</th>
       <th scope="col">Pointé</th>
       <th scope="col">Description</th>
+      <th scope="col"></th>
     </tr>
   </thead>
 <?php
@@ -98,6 +99,20 @@
             echo "<td>" . $amount . "</td>";
             echo "<td>" . $isChecked . "</td>";
             echo "<td>" . $description . "</td>";
+            // le lien ne fonctionne pas.
+            echo "<td>
+                <a href=\"receipt.php" .
+                "?id=" . $row['id'] .
+                "&photo=" . $row['photo'] .
+                "&date=" . $row['date_emission'] .
+                "&type=" . $receiptType .
+                "&tva=" . $tva .
+                "&amount=" . $amount .
+                "&isChecked=" . $isChecked .
+                "&description=" . $description .
+                "\">x</a>
+            </td>";
+            
         echo "</tr>";
     }
 ?>

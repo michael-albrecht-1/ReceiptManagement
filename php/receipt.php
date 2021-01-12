@@ -8,12 +8,17 @@
         header("Location: login.php");
     }
 
+    // en modif d'un ticket, on récupère le nom de la photo
+    if ( isset($_GET['photo']) ) {
+      $target = "../pictures/".basename($_GET['photo']);
+    }
+
     // traitement de l'envoi du formulaire
     if (isset($_POST['upload'])) {
         // On récupère le nom de l'image
         $picture = $_FILES['photo']['name'];
         // répertoire de stockage des images
-    	$target = "../pictures/".basename($picture);
+    	  $target = "../pictures/".basename($picture);
 
         // Date
         $date = $_POST['date'];
@@ -33,8 +38,14 @@
         // Description
         $description = mysqli_real_escape_string($conn, $_POST['description']);
         
-        $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `type`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$type',$amountTTC,'$tva','$isChecked','$description')";
-        $result = mysqli_query($conn,$query);
+        if ($_POST['receiptid'] == "") { 
+          $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `type`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$type',$amountTTC,'$tva','$isChecked','$description')";
+          $result = mysqli_query($conn,$query);
+        }else { // A TESTER
+          $id = $_POST['receiptid'];
+          $query = "UPDATE INTO `receipts`(`photo`, `date_emission`, `type`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$type',$amountTTC,'$tva','$isChecked','$description') WHERE id = 'id'";
+          $result = mysqli_query($conn,$query);
+        }
 
         
         // On importe l'image
@@ -46,11 +57,19 @@
     }
 ?>
 
-<h1>Ajouter / modifier un ticket</h1>
+<?php 
+  if( isset($_GET['id']) ) {
+    echo "<h1>Modif du ticket n°" . $_GET['id'] . "</h1>";
+  } else {
+    echo "<h1>Ajout d'un ticket</h1>"; 
+  }  
+
+?>
 
 <?= $msg ?? "" ?>
 
 <form method="post" action="receipt.php" name="receipt" enctype="multipart/form-data">
+    <input id="receiptid" name="receiptid" type="hidden" value="<?= $_GET['id'] ?? "" ?>">
     <fieldset>
     <div class="form-group row">
       <label for="photo">Prendre une photo</label>
@@ -58,12 +77,14 @@
     </div>
 
     <div class="form-group row">
-        <img id="preload">
+        <img id="preload" src="<?= $target ?? "" ?>">
     </div>
     
+  
+
     <div class="form-group row">
       <label for="date">Date</label>
-      <input type="date" class="form-control" id="date" name="date"  value="<?= date("Y-m-d") ?>" required>
+      <input type="date" class="form-control" id="date" name="date"  value="<?= $_GET['date'] ?? date("Y-m-d") ?>" required>
     </div>
     
     <div class="form-group row">
@@ -71,9 +92,14 @@
       <select class="form-control" id="type" name="type"> 
         <?php foreach ($receiptTypes as $index => $type){ 
             $selected = "";
-            if (isset($_POST['type'])) {
+            
+            if (isset($_GET['type'])) {
+              $_GET['type'] == $type ? $selected = "selected" : $selected = ""; 
+            } else {
+              if (isset($_POST['type'])) {
                 $_POST['type'] == $index ? $selected = "selected" : $selected = ""; 
-            } 
+              } 
+            }
             echo "<option value=" . $index . " " . $selected . ">" . $type . "</option>";
         }
         ?>
@@ -82,7 +108,7 @@
 
     <div class="form-group row">
       <label for="montant">Montant TTC</label>
-      <input type="text" class="form-control" id="amountTTC" name="amountTTC" placeholder="Saisir le montant TTC" required>
+      <input type="text" class="form-control" id="amountTTC" name="amountTTC" placeholder="Saisir le montant TTC" value="<?= $_GET['amount'] ?? "" ?>" required>
     </div>    
 
     <fieldset class="form-group">
