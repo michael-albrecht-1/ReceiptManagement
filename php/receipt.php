@@ -88,7 +88,7 @@
     <fieldset>
     <div class="form-group row">
       <label for="photo">Prendre une photo</label>
-      <input type="file" accept="image/*" class="form-control-file photoReceipt" name = "photo" id="photo" capture="camera" required>
+      <input type="file" accept="image/*" class="form-control-file photoReceipt" name = "photo" id="photo" capture="camera" <?= isset($_GET['photo']) ? "" : "required" ?>>
     </div>
 
     <div class="form-group row">
