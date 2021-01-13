@@ -54,6 +54,7 @@ let handleSelectChange = (selectedType) => {
 
 }
 
+// si on sélectionne un autre type on appelle la fonction "handleSelectChange"
 let selectNode = document.querySelector("#type");
 selectNode.addEventListener("change", (event) => {
     handleSelectChange(event.target.value);
@@ -62,54 +63,70 @@ selectNode.addEventListener("change", (event) => {
 
 // select the right TVA code on when DOM is loaded 
 window.addEventListener("DOMContentLoaded", () => {
-    optionNodes = document.querySelectorAll("option");
-    optionNodes.forEach(element => {
-        if (element.selected === true) {
-            handleSelectChange(element.value);
+    const queryString = window.location.search; // cherche si on recoit des apramètres dans l'URL
+    if (queryString == "") {
+        optionNodes = document.querySelectorAll("option");
+        optionNodes.forEach(element => {
+            if (element.selected === true) {
+                handleSelectChange(element.value);
+            }
+        });
+    } else {
+        const urlParams = new URLSearchParams(queryString);
+        const tva = urlParams.get('tva');
+    
+        console.log("on essaye de récup le taux de tva en update de ticket");
+        let tva1Input = document.querySelector("#tva1");
+        let tva2Input = document.querySelector("#tva2");
+        let tva3Input = document.querySelector("#tva3");
+        let tva4Input = document.querySelector("#tva4");
+        console.log("param : " + tva);
+    
+        let idTva;
+        switch (tva) {
+            case "0":
+                idTva = "tva1";
+                break;
+            case "5.5":
+                idTva = "tva2";
+                break;
+            case "10":
+                idTva = "tva3";
+                break;
+            case "20":
+                idTva = "tva4";
+                break;
+            default:
+                idTva = "tva4"
+                break;
         }
-    });
+      
+        if (tva1Input.id  == idTva) {
+            tva1Input.checked = true;
+        }   else {
+            tva1Input.checked = false;
+        }
+    
+        if (tva2Input.id  == idTva) {
+            tva2Input.checked = true;
+        }   else {
+            tva2Input.checked = false;
+        }
+    
+        if (tva3Input.id  == idTva) {
+            tva3Input.checked = true;
+        }   else {
+            tva3Input.checked = false;
+        }
+    
+        if (tva4Input.id  == idTva) {
+            tva4Input.checked = true;
+        }   else {
+            tva4Input.checked = false;
+        }
+    }
 })
 
 
-// select the rigth TVA in case of update receipt - en travaux
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const tva = urlParams.get('tva');
-
-if (tva != null) {
-    
-    console.log("on essaye de récup le taux de tva en update de ticket");
-    let tvaCheck = document.querySelectorAll(".tva-check");
-    console.log("param : " + tva);
-
-    let idTva;
-    switch (tva) {
-        case "0":
-            idTva = "TVA1";
-            break;
-        case "5.5":
-            idTva = "TVA2";
-            break;
-        case "10":
-            idTva = "TVA3";
-            break;
-        case "20":
-            idTva = "TVA4";
-            break;
-        default:
-            idTva = "TVA4"
-            break;
-    }
-
-    tvaCheck.forEach( (node) => {
-        if (node.id == idTva) {
-            node.checked = true
-        }   else {
-            node.checked = false;
-        }
-
-
-    })
-}
 
     
