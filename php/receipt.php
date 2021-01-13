@@ -66,14 +66,13 @@
         }else { // A TESTER
           $id = $_POST['receiptid'];
           $query = "UPDATE `receipts` SET `photo`='$picture', `date_emission`='$date', `type`='$type', `montant_ttc`=$amountTTC, `tva`='$tva', `checked`='$isChecked', `description`='$description' WHERE `receipts`.id = '$id'";
-          var_dump($query);
           $result = mysqli_query($conn,$query);
         }
 
         
         // On importe l'image
-        if (isset($_FILES['photo']['name'])) {
-          if (!move_uploaded_file($_FILES['photo']['tmp_name'], $target)) {
+        if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
+          if (move_uploaded_file($_FILES['photo']['tmp_name'], $target)) {
             sendMessage("L'import de l'image n'a pas fonctionné !", "danger");
           }
         }
