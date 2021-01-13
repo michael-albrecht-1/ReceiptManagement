@@ -1,6 +1,7 @@
 <?php
     require __DIR__ . '/inc/header.tpl.php';
     require __DIR__ . '/config.php';
+    require __DIR__ . '/inc/functions.php';
     require __DIR__ . '/inc/data.php';
 
     // Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
@@ -30,10 +31,16 @@
 
     // traitement de l'envoi du formulaire
     if (isset($_POST['upload'])) {
-        // On récupère le nom de l'image
-        $picture = $_FILES['photo']['name'];
-        // répertoire de stockage des images
-    	  $target = "../pictures/".basename($picture);
+        if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
+          // On récupère le nom de l'image
+          $picture = $_FILES['photo']['name'];
+          // répertoire de stockage des images
+          $target = "../pictures/".basename($picture);
+        } else  {
+          $picture = $_POST['uploadSrc'];
+        }
+        // Pour les mises à jour
+        isset($_POST['id']) ?  $id = $_POST['id'] : $id = "";
 
         // Date
         $date = $_POST['date'];
@@ -58,16 +65,23 @@
           $result = mysqli_query($conn,$query);
         }else { // A TESTER
           $id = $_POST['receiptid'];
-          $query = "UPDATE INTO `receipts`(`photo`, `date_emission`, `type`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$type',$amountTTC,'$tva','$isChecked','$description') WHERE id = 'id'";
+          $query = "UPDATE `receipts` SET `photo`='$picture', `date_emission`='$date', `type`='$type', `montant_ttc`=$amountTTC, `tva`='$tva', `checked`='$isChecked', `description`='$description' WHERE `receipts`.id = '$id'";
+          var_dump($query);
           $result = mysqli_query($conn,$query);
         }
 
         
         // On importe l'image
-        if (move_uploaded_file($_FILES['photo']['tmp_name'], $target) && $result) {
-            $msg = '<div class="col-lg-4 alert alert-success alert-dismissible text-center"><button type="button" class="close" data-bs-dismiss="alert">&times;</button>Ticket enregistré</div>';
+        if (isset($_FILES['photo']['name'])) {
+          if (!move_uploaded_file($_FILES['photo']['tmp_name'], $target)) {
+            sendMessage("L'import de l'image n'a pas fonctionné !", "danger");
+          }
+        }
+
+        if ($result) {
+          $msg = sendMessage("Ticket enregistré ! ", "success");
         }else{
-            $msg = '<div class="col-lg-4 alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-bs-dismiss="alert">&times;</button>Ça n\'a pas fonctionné !</div>';
+          $msg = sendMessage("Ça n'a pas fonctionné ! ", "danger");
         }
     }
 ?>
@@ -93,6 +107,7 @@
 
     <div class="form-group row">
         <img id="preload" src="<?= $srcPhoto ?? "" ?>">
+        <input id="uploadSrc" name="uploadSrc" type="hidden" value="<?= $_GET['photo'] ?? "" ?>">
     </div>
     
   

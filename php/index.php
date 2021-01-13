@@ -107,7 +107,7 @@
                 "&date=" . $row['date_emission'] .
                 "&type=" . $receiptType .
                 "&tva=" . $tva .
-                "&amount=" . $amount .
+                "&amount=" . $row['montant_ttc'] .
                 "&isChecked=" . $isChecked .
                 "&description=" . $description .
                 "\">x</a>
