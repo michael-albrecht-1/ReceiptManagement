@@ -10,27 +10,10 @@
     }
 ?>
 
-
 <h1>Liste des tickets</h1>
 
-<?php 
+<?php $showReceipts = filterReceipts($conn);  ?>
 
-    
-    $req = "SELECT * FROM receipts";
-
-    if ( isset($_GET['filter']) ) 
-    {
-        if ( isset($_GET['isChecked']) )
-        if ( count($_GET['isChecked']) == 1) {
-            $req = $req . " WHERE checked = " . $_GET['isChecked'][0];
-        } elseif (count($_GET['isChecked']) == 2) {
-            $req = $req . " WHERE checked = " . $_GET['isChecked'][0] . " or " . "checked = " . $_GET['isChecked'][1]; 
-        }
-    }
-
-    $showReceipts = mysqli_query($conn, $req);
-
-?>
 <table class="table table-hover">
     <form method="get" action="">
         <div class="row">
@@ -66,6 +49,12 @@
             }
         }
 
+        // format values
+        $fmt = new NumberFormatter( 'de_DE', NumberFormatter::CURRENCY );
+        $amount = $fmt->formatCurrency($row['montant_ttc'], "EUR");
+        $row['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
+        $description = truncate($row['description'], 40);
+
         // TVA
         if ($row['tva'] =='tva1') 
         {
@@ -80,16 +69,6 @@
         {
             $tva = "20";
         }
-
-        // TTC amount
-        $fmt = new NumberFormatter( 'de_DE', NumberFormatter::CURRENCY );
-        $amount = $fmt->formatCurrency($row['montant_ttc'], "EUR");
-
-        // Is checked ?
-        $row['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
-
-        // description
-        $description = truncate($row['description'], 40);
         
         echo "<tr>";
             echo "<td>" . $row['date_emission'] . "</td>";
