@@ -2,7 +2,7 @@
 
 
 function filterReceipts($conn) {
-  $req = "SELECT * FROM receipts";
+  $req = "SELECT * FROM receipts ORDER BY `date_emission` DESC, `id` DESC";
 
   if ( isset($_GET['filter']) ) 
   {
@@ -13,6 +13,7 @@ function filterReceipts($conn) {
           $req = $req . " WHERE checked = " . $_GET['isChecked'][0] . " or " . "checked = " . $_GET['isChecked'][1]; 
       }
   }
+
 
   return mysqli_query($conn, $req);
 }
