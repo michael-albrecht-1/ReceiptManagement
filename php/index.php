@@ -94,19 +94,18 @@
         echo "<tr>";
             echo "<td>" . $row['date_emission'] . "</td>";
             echo "<td>" . $receiptType . "</td>";
-            echo "<td>" . $row['fournisseur'] . "</td>";
+            echo "<td>" . $row['provider'] . "</td>";
             echo "<td>" . $tva . "</td>";
             echo "<td>" . $amount . "</td>";
             echo "<td>" . $isChecked . "</td>";
             echo "<td>" . $row['description'] . "</td>";
-            // le lien ne fonctionne pas.
             echo "<td>
                 <a href=\"receipt.php" .
                 "?id=" . $row['id'] .
                 "&photo=" . $row['photo'] .
                 "&date=" . $row['date_emission'] .
                 "&type=" . $receiptType .
-                "&fournisseur=" . $row['fournisseur'] .
+                "&fournisseur=" . $row['provider'] .
                 "&tva=" . $tva .
                 "&amount=" . $row['montant_ttc'] .
                 "&isChecked=" . $isChecked .

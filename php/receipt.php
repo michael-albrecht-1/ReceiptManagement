@@ -39,33 +39,23 @@
         } else  {
           $picture = $_POST['uploadSrc'];
         }
-        // Pour les mises à jour
-        isset($_POST['id']) ?  $id = $_POST['id'] : $id = "";
 
-        // Date
+        
+        isset($_POST['id']) ?  $id = $_POST['id'] : $id = ""; // in case of receipt update
         $date = $_POST['date'];
-
-        // Type
         $type =  $_POST['type'];
-
-        // Montant TTC
+        $provider = mysqli_real_escape_string($conn, $_POST['provider']);
         $amountTTC = $_POST['amountTTC'];
-
-        // Taux de TVA
         $tva = $_POST['tva'];
-
-        // Pointé ou non en compta
         $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
-
-        // Description
         $description = mysqli_real_escape_string($conn, $_POST['description']);
         
         if ($_POST['receiptid'] == "") { 
-          $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `type`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$type',$amountTTC,'$tva','$isChecked','$description')";
+          $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `type`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$type', '$provider', $amountTTC,'$tva','$isChecked','$description')";
           $result = mysqli_query($conn,$query);
-        }else { // A TESTER
+        }else { 
           $id = $_POST['receiptid'];
-          $query = "UPDATE `receipts` SET `photo`='$picture', `date_emission`='$date', `type`='$type', `montant_ttc`=$amountTTC, `tva`='$tva', `checked`='$isChecked', `description`='$description' WHERE `receipts`.id = '$id'";
+          $query = "UPDATE `receipts` SET `photo`='$picture', `date_emission`='$date', `type`='$type', `provider`='$provider', `montant_ttc`=$amountTTC, `tva`='$tva', `checked`='$isChecked', `description`='$description' WHERE `receipts`.id = '$id'";
           $result = mysqli_query($conn,$query);
         }
 
@@ -135,6 +125,11 @@
       </select>
     </div>
 
+    <div class="form-group row">
+      <label for="montant">Fournisseur</label>
+      <input type="text" class="form-control" id="provider" name="provider" placeholder="Saisir le nom du fournisseur" value="<?= $_GET['provider'] ?? "" ?>" required>
+    </div>    
+    
     <div class="form-group row">
       <label for="montant">Montant TTC</label>
       <input type="text" class="form-control" id="amountTTC" name="amountTTC" placeholder="Saisir le montant TTC" value="<?= $_GET['amount'] ?? "" ?>" required>

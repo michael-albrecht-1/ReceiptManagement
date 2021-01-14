@@ -4,7 +4,7 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 ## To DO
 
 - pagination de la liste des tickets
-- ajouter un champs texte libre fournisseur
+- supprimer un ticket ?
 - gérer des profils ? utilisateur/comptable
 - page export ou ajouter des filtres de date sur la page de liste des tickets et un bouton export ?
 - export CSV : DATE // TYPE // FOURNISSEUR // MONTANT HT // TAUX TVA // MONTANT TVA // MONTANT TTC // VALIDATION FINAL
@@ -19,7 +19,7 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ### Liste des tickets
 
-- affiche un tableau avec la date d'emission du ticket, le type de ticket (restaurant, gasoil, etc..),  le taux de TVA, le total TTC, si les tickets ont été pointés ou pas et une description optionnelle
+- affiche un tableau avec la date d'emission du ticket, le type de ticket (restaurant, gasoil, etc..), le fournisseur, le taux de TVA, le total TTC, si les tickets ont été pointés ou pas et une description optionnelle
 - on peut si ils sont pointés ou non (par défaut on affiche tout)
 
 ### Ajout d'un ticket
