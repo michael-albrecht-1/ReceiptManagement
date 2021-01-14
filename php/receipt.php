@@ -193,6 +193,7 @@
 
 </form>
 
+<script src="../js/tva.js"></script>
 <script src="../js/uploadReceipt.js"></script>
 
 <?php
