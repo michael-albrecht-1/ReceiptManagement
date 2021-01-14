@@ -28,8 +28,6 @@
         }
     }
 
-
- 
     $showReceipts = mysqli_query($conn, $req);
 
 ?>
@@ -51,6 +49,7 @@
     <tr class="table-dark">
       <th scope="col">Date</th>
       <th scope="col">Type</th>
+      <th scope="col">Fournisseur</th>
       <th scope="col">TVA</th>
       <th scope="col">TTC</th>
       <th scope="col">Pointé</th>
@@ -95,10 +94,11 @@
         echo "<tr>";
             echo "<td>" . $row['date_emission'] . "</td>";
             echo "<td>" . $receiptType . "</td>";
+            echo "<td>" . $row['fournisseur'] . "</td>";
             echo "<td>" . $tva . "</td>";
             echo "<td>" . $amount . "</td>";
             echo "<td>" . $isChecked . "</td>";
-            echo "<td>" . $description . "</td>";
+            echo "<td>" . $row['description'] . "</td>";
             // le lien ne fonctionne pas.
             echo "<td>
                 <a href=\"receipt.php" .
@@ -106,6 +106,7 @@
                 "&photo=" . $row['photo'] .
                 "&date=" . $row['date_emission'] .
                 "&type=" . $receiptType .
+                "&fournisseur=" . $row['fournisseur'] .
                 "&tva=" . $tva .
                 "&amount=" . $row['montant_ttc'] .
                 "&isChecked=" . $isChecked .
