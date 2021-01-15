@@ -22,3 +22,7 @@ h1 {
 #preload {
     width: 100vw;
 }
+
+#filter-form > .row {
+    margin-left: 0px;
+}

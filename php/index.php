@@ -12,10 +12,7 @@
 
 <h1>Liste des tickets</h1>
 
-
-
-<table class="table table-hover">
-    <form method="get" action="">
+<form method="get" action="" id="filter-form">
         <div class="row">
             <div class="form-group isChecked">
                 <label for="ischecked">Pointé</label>
@@ -27,7 +24,9 @@
 
             <button type="submit" name="filter" class="btn btn-primary submitListReceiptFilters">Valider</button>
         </div> 
-    </form>
+</form>
+
+<table class="table table-hover">
 <thead>
     <tr class="table-dark">
       <th scope="col">Date</th>
@@ -41,7 +40,6 @@
     </tr>
   </thead>
     <?php
-
 
     $total_records_per_page = 6;
 
@@ -96,12 +94,11 @@
         $row['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
         $description = truncate($row['description'], 40);
 
-        // format categories --- HS
+        // format categories
         foreach ($receiptCategories as $index => $category) {
             if ($index == $row['category']) {
+                echo "index : " . $index . " et value : " . $category . "<br>";
                 $receiptCategory = $category;
-            } else {
-                $receiptCategory = "";
             }
         }
 
