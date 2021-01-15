@@ -69,7 +69,8 @@
     $second_last = $total_no_of_pages - 1; // total pages minus 1
 
 
-    // build request------------------------
+    // build request------------------------ 
+    // ---- checked filter HS due to pagination -> GET -> session ?  
     if ( isset($_GET['filter']) ) 
     {
         if ( isset($_GET['isChecked']) )
@@ -159,29 +160,37 @@
     <strong>Page <?php echo $page_no." of ".$total_no_of_pages; ?></strong>
 </div>
 
-<ul>
-    <?php if($page_no > 1){
-    echo "<li><a href='?page_no=1'>First Page</a></li>";
-    } ?>
+<nav aria-label="Receipts navigation">
+    <ul class="pagination">
+        <?php if($page_no > 1){
+        echo "<li class=\"page-item\"><a class=\"page-link\" href='?page_no=1'>First Page</a></li>";
+        } ?>
+
+
+        <li <?php if($page_no <= 1){ echo "class='page-item disabled'"; } else { echo "class='page-item'"; } ?>>
+        <a class="page-link" <?php if($page_no > 1){
+        echo "href='?page_no=$previous_page'";
+        } ?>>Previous</a>
+        </li>
+            
+
+        <li <?php if($page_no >= $total_no_of_pages){
+            echo "class='disabled page-item'";
+        } else {
+            echo "page-item'";
+        } 
+        ?>>
+        <a class="page-link" <?php if($page_no < $total_no_of_pages) {
+        echo "href='?page_no=$next_page'";
+        } ?>>Next</a>
+        </li>
+
         
-    <li <?php if($page_no <= 1){ echo "class='disabled'"; } ?>>
-    <a <?php if($page_no > 1){
-    echo "href='?page_no=$previous_page'";
-    } ?>>Previous</a>
-    </li>
-        
-    <li <?php if($page_no >= $total_no_of_pages){
-    echo "class='disabled'";
-    } ?>>
-    <a <?php if($page_no < $total_no_of_pages) {
-    echo "href='?page_no=$next_page'";
-    } ?>>Next</a>
-    </li>
-    
-    <?php if($page_no < $total_no_of_pages){
-    echo "<li><a href='?page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
-    } ?>
-</ul>
+        <?php if($page_no < $total_no_of_pages){
+        echo "<li class=\"page-item\"><a class=\"page-link\" href='?page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
+        } ?>
+    </ul>
+</nav>
 
 
 <script src="../js/receiptList.js"></script>
