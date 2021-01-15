@@ -43,7 +43,7 @@
         
         isset($_POST['id']) ?  $id = $_POST['id'] : $id = ""; // in case of receipt update
         $date = $_POST['date'];
-        $type =  $_POST['type'];
+        $receiptCategory =  $_POST['receiptCategory'];
         $provider = mysqli_real_escape_string($conn, $_POST['provider']);
         $amountTTC = $_POST['amountTTC'];
         $tva = $_POST['tva'];
@@ -51,11 +51,11 @@
         $description = mysqli_real_escape_string($conn, $_POST['description']);
         
         if ($_POST['receiptid'] == "") { 
-          $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `type`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$type', '$provider', $amountTTC,'$tva','$isChecked','$description')";
+          $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$receiptCategory', '$provider', $amountTTC,'$tva','$isChecked','$description')";
           $result = mysqli_query($conn,$query);
         }else { 
           $id = $_POST['receiptid'];
-          $query = "UPDATE `receipts` SET `photo`='$picture', `date_emission`='$date', `type`='$type', `provider`='$provider', `montant_ttc`=$amountTTC, `tva`='$tva', `checked`='$isChecked', `description`='$description' WHERE `receipts`.id = '$id'";
+          $query = "UPDATE `receipts` SET `photo`='$picture', `date_emission`='$date', `category`='$receiptCategory', `provider`='$provider', `montant_ttc`=$amountTTC, `tva`='$tva', `checked`='$isChecked', `description`='$description' WHERE `receipts`.id = '$id'";
           $result = mysqli_query($conn,$query);
         }
 
@@ -108,18 +108,18 @@
     
     <div class="form-group row">
       <label for="type">Type</label>
-      <select class="form-control" id="type" name="type"> 
-        <?php foreach ($receiptTypes as $index => $type){ 
+      <select class="form-control" id="receiptCategory" name="receiptCategory"> 
+        <?php foreach ($receiptCategories as $index => $category){ 
             $selected = "";
             
-            if (isset($_GET['type'])) {
-              $_GET['type'] == $type ? $selected = "selected" : $selected = ""; 
+            if (isset($_GET['receiptCategory'])) {
+              $_GET['receiptCategory'] == $category ? $selected = "selected" : $selected = ""; 
             } else {
-              if (isset($_POST['type'])) {
-                $_POST['type'] == $index ? $selected = "selected" : $selected = ""; 
+              if (isset($_POST['receiptCategory'])) {
+                $_POST['receiptCategory'] == $index ? $selected = "selected" : $selected = ""; 
               } 
             }
-            echo "<option value=" . $index . " " . $selected . ">" . $type . "</option>";
+            echo "<option value=" . $index . " " . $selected . ">" . $category . "</option>";
         }
         ?>
       </select>

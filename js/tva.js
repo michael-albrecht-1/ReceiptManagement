@@ -2,7 +2,7 @@ let tva = {
 
     init: () => {
         tva.getTVAWhenUpdateReceipt();
-        document.querySelector("#type").addEventListener("change", (event) => tva.handleSelectChange(event.target.value));
+        document.querySelector("#receiptCategory").addEventListener("change", (event) => tva.handleSelectChange(event.target.value));
         document.querySelector("#photo").addEventListener("change", preloadReceiptPhoto);
     },
 

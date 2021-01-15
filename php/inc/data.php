@@ -1,6 +1,6 @@
 <?php 
 
-$receiptTypes = ["restaurant", "gasoil", "hôtel", "péage", "autre"];   
+$receiptCategories = ["restaurant", "gasoil", "hôtel", "péage", "autre"];   
 
 
 ?>
