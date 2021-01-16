@@ -16,7 +16,7 @@
         <div class="row">
             <div class="form-group isChecked">
                 <label for="ischecked">Pointé</label>
-                <select multiple size = 2 class="form-control" name="isChecked[]">
+                <select multiple size = 2 class="form-control" name="isChecked[]" required>
                     <option value="true">oui</option>
                     <option value="false">non</option>
                 </select>
@@ -67,20 +67,24 @@
     $second_last = $total_no_of_pages - 1; // total pages minus 1
 
 
-    // build request------------------------ 
-    // ---- checked filter HS due to pagination -> GET -> session ?  
-    if ( isset($_GET['filter']) ) 
+    // ---- checked filter -> set a cookie  
+    if ( isset($_GET['filter']) && isset($_GET['isChecked']) ) 
     {
-        if ( isset($_GET['isChecked']) )
         if ( count($_GET['isChecked']) == 1) {
-            $checkedSQL = $_GET['isChecked'][0];
-        } elseif (count($_GET['isChecked']) == 2) {
-            $checkedSQL = $_GET['isChecked'][0] . " OR " . "checked = " . $_GET['isChecked'][1]; 
+            $checkedSQL = "checked=" .  $_GET['isChecked'][0];
+        } elseif ( (count($_GET['isChecked']) == 0) || (count($_GET['isChecked']) == 2) ){
+            $checkedSQL = "checked=" . $_GET['isChecked'][0] . " OR " . "checked = " . $_GET['isChecked'][1];
+             
         }
-        $req = "SELECT * FROM `receipts` WHERE checked=$checkedSQL ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
+        setcookie("isChecked", $checkedSQL,  time() + 2592000);
+        $req = "SELECT * FROM `receipts` WHERE $checkedSQL ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
+    } elseif ( isset($_COOKIE['isChecked']) ){
+        $isCheckedcookie = $_COOKIE["isChecked"];
+        $req = "SELECT * FROM `receipts` WHERE $isCheckedcookie ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
     } else {
         $req = "SELECT * FROM `receipts` ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
     }
+
 
     
     $result = mysqli_query($conn, $req);
@@ -97,7 +101,6 @@
         // format categories
         foreach ($receiptCategories as $index => $category) {
             if ($index == $row['category']) {
-                echo "index : " . $index . " et value : " . $category . "<br>";
                 $receiptCategory = $category;
             }
         }
@@ -129,7 +132,7 @@
             echo "<td>" . $isChecked . "</td>";
             echo "<td>" . $row['description'] . "</td>";
             echo "<td>
-                <a href=\"receipt.php" .
+                <a class='update-receipt' href=\"receipt.php" .
                 "?id=" . $row['id'] .
                 "&photo=" . $row['photo'] .
                 "&date=" . $row['date_emission'] .
@@ -139,7 +142,7 @@
                 "&amount=" . $row['montant_ttc'] .
                 "&isChecked=" . $isChecked .
                 "&description=" . $description .
-                "\">x</a>
+                "\">&#9998;</a>
             </td>";
             
         echo "</tr>";
@@ -178,8 +181,9 @@
         } 
         ?>>
         <a class="page-link" <?php if($page_no < $total_no_of_pages) {
-        echo "href='?page_no=$next_page'";
-        } ?>>Next</a>
+                    echo "href='?page_no=$next_page'";
+            } ?>
+        >Next</a>
         </li>
 
         

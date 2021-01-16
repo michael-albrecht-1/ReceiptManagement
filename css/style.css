@@ -26,3 +26,7 @@ h1 {
 #filter-form > .row {
     margin-left: 0px;
 }
+
+.update-receipt {
+    text-decoration: none;
+}
