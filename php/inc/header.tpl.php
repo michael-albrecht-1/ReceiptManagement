@@ -28,9 +28,6 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="receipt.php">Ajout d'un ticket</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="export.php">Export</a>
-                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $_SESSION['username']; ?></a>
                                 <div class="dropdown-menu">
