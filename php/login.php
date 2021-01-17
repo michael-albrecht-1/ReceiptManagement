@@ -20,7 +20,7 @@
   $requete = "SELECT * FROM `users`";
   $reponse = mysqli_query($conn,$requete) or die(mysql_error());
   if ($reponse->num_rows === 0) {
-      require __DIR__ . "/firstlogin.php"; 
+      require __DIR__ . "/firstLogin.php"; 
   } else 
   {
     if (isset($_POST['username'])){

@@ -3,11 +3,11 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ## To DO
 
+- home page list -> ajout ticket ?
 - supprimer un ticket ? vrai suppression ou table archive ?
 - gérer des profils ? utilisateur/comptable
 - page export ou ajouter des filtres de date sur la page de liste des tickets et un bouton export ?
-- export CSV : DATE // TYPE // FOURNISSEUR // MONTANT HT // TAUX TVA // MONTANT TVA // MONTANT TTC // VALIDATION FINAL
-- dans le formulaire d'ajout d'un ticket returer le champs "pointéé ?
+- export CSV : DATE // TYPE // FOURNISSEUR // MONTANT HT // TAUX TVA // MONTANT TVA // MONTANT TTC // VALIDATION FINAL?
 
 ## Fonctionnalitées
 
