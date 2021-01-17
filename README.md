@@ -3,7 +3,6 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ## To DO
 
-- pagination de la liste des tickets
 - supprimer un ticket ? vrai suppression ou table archive ?
 - gérer des profils ? utilisateur/comptable
 - page export ou ajouter des filtres de date sur la page de liste des tickets et un bouton export ?

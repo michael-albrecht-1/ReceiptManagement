@@ -135,49 +135,52 @@
       <input type="text" class="form-control" id="amountTTC" name="amountTTC" placeholder="Saisir le montant TTC" value="<?= $_GET['amount'] ?? "" ?>" required>
     </div>    
 
-    <fieldset class="form-group">
-      <legend>TVA</legend>
-      <div class="form-check">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input tva-check" name="tva" id="tva1" value="tva1">
-          0
-        </label>
-      </div>
-      <div class="form-check">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input tva-check" name="tva" id="tva2" value="tva2">
-          5.5
-        </label>
-      </div>
-      <div class="form-check">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input tva-check" name="tva" id="tva3" value="tva3">
-          10
-        </label>
-      </div>
-      <div class="form-check">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input tva-check" name="tva" id="tva4" value="tva4">
-          20
-        </label>
-      </div>
-    </fieldset>
+    <div class="row">
+      <fieldset class="form-group col-6">
+        <legend>TVA</legend>
+        <div class="form-check">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input tva-check" name="tva" id="tva1" value="tva1">
+            0
+          </label>
+        </div>
+        <div class="form-check">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input tva-check" name="tva" id="tva2" value="tva2">
+            5.5
+          </label>
+        </div>
+        <div class="form-check">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input tva-check" name="tva" id="tva3" value="tva3">
+            10
+          </label>
+        </div>
+        <div class="form-check">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input tva-check" name="tva" id="tva4" value="tva4">
+            20
+          </label>
+        </div>
+      </fieldset>
 
-    <fieldset class="form-group">
-      <legend>Pointé</legend>
-      <div class="form-check">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="ischecked" id="oui" value="true" <?= $isCheckedYes ?>>
-          oui
-        </label>
-      </div>
-      <div class="form-check">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="ischecked" id="non" value="false" <?= $isCheckedNo ?>>
-          non
-        </label>
-      </div>
-    </fieldset>
+      <fieldset class="form-group col-6">
+        <legend>Pointé</legend>
+        <div class="form-check">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="ischecked" id="oui" value="true" <?= $isCheckedYes ?>>
+            oui
+          </label>
+        </div>
+        <div class="form-check">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="ischecked" id="non" value="false" <?= $isCheckedNo ?>>
+            non
+          </label>
+        </div>
+      </fieldset>
+    </div>
+    
 
     <div class="form-group">
       <label for="exampleTextarea">Description</label>

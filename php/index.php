@@ -13,31 +13,30 @@
 <h1>Liste des tickets</h1>
 
 <form method="get" action="" id="filter-form">
-            <fieldset class="form-group">
-                <legend>Pointé</legend>
-                <div class="form-check">
-                    <label class="form-check-label">
-                    <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-yes" value="isChecked-yes">
-                    Oui
-                    </label>
-                </div>
-                <div class="form-check">
-                    <label class="form-check-label">
-                    <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-no" value="isChecked-no">
-                    Non
-                    </label>
-                </div>
-                <div class="form-check">
-                    <label class="form-check-label">
-                    <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-all" value="isChecked-all">
-                    Les deux
-                    </label>
-                </div>
-                </div>
-            </fieldset>
-
-            <button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button>
-        </div> 
+    <div class="row"> 
+        <div>  
+            <legend>Pointé</legend>
+            <div class="form-check">
+                <label class="form-check-label">
+                <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-yes" value="isChecked-yes">
+                Oui
+                </label>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-no" value="isChecked-no">
+                Non
+                </label>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-all" value="isChecked-all">
+                Les deux
+                </label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button>
+    </div>
 </form>
 
 <table class="table table-hover">
@@ -55,37 +54,25 @@
   </thead>
     <?php
 
+    // pagination ----------------
     $total_records_per_page = 6;
-
-    // get the current page number
     if (isset($_GET['page_no']) && $_GET['page_no']!="") {
     $page_no = $_GET['page_no'];
     } else {
         $page_no = 1;
         }
 
-
     $offset = ($page_no-1) * $total_records_per_page;
     $previous_page = $page_no - 1;
     $next_page = $page_no + 1;
     $adjacents = "2";
-
-    // 
-    $result_count = mysqli_query(
-    $conn,
-    "SELECT COUNT(*) As total_records FROM `receipts`"
-    );
-    $total_records = mysqli_fetch_array($result_count);
-    $total_records = $total_records['total_records'];
-    $total_no_of_pages = ceil($total_records / $total_records_per_page);
-    $second_last = $total_no_of_pages - 1; // total pages minus 1
+    // ----------------------------
 
 
     // ---- checked filter -> set a cookie  
     if (isset($_GET['isChecked']) ) 
     {
         $isChecked = $_GET['isChecked'];
-        var_dump($isChecked);
         if ( $isChecked == "isChecked-yes") {
             $checkedSQL = "checked=true";
         } elseif ( $isChecked == "isChecked-no") {
@@ -97,18 +84,31 @@
         }
         setcookie("isChecked", $checkedSQL,  time() + 2592000);
         setcookie("isCheckedJS", $_GET['isChecked'],  time() + 2592000);
-        $req = "SELECT * FROM `receipts` WHERE $checkedSQL ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
+        $where = 'WHERE ' . $checkedSQL;
+        $req = "SELECT * FROM `receipts` $where ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
     } elseif ( isset($_COOKIE['isChecked']) ){
-        $isCheckedcookie = $_COOKIE["isChecked"];
-        $req = "SELECT * FROM `receipts` WHERE $isCheckedcookie ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
+        $where = 'WHERE ' . $_COOKIE["isChecked"];
+        $req = "SELECT * FROM `receipts` $where ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
     } else {
         $req = "SELECT * FROM `receipts` ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
     }
-
-
-    
     $result = mysqli_query($conn, $req);
     // ---------------------------
+    
+    // pagination -------------------------------------------------
+    if (isset($where)){
+        $paginateCountReq = "SELECT COUNT(*) As total_records FROM `receipts` $where";
+    } else {
+        $paginateCountReq = "SELECT COUNT(*) As total_records FROM `receipts`";
+    }
+
+    $result_count = mysqli_query($conn, $paginateCountReq);
+    $total_records = mysqli_fetch_array($result_count);
+    $total_records = $total_records['total_records'];
+    $total_no_of_pages = ceil($total_records / $total_records_per_page);
+    $second_last = $total_no_of_pages - 1; // total pages minus 1
+    //----------------------------------------------------------------
+
 
     while ($row = mysqli_fetch_array($result)) { 
 
@@ -176,42 +176,46 @@
 
 </table>
 
-<div>
-    <strong>Page <?php echo $page_no." of ".$total_no_of_pages; ?></strong>
+<div class="row">
+    <div>
+        <nav aria-label="Receipts navigation">
+            <ul class="pagination">
+                <?php if($page_no > 1){
+                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page_no=1'>First Page</a></li>";
+                } ?>
+
+
+                <li <?php if($page_no <= 1){ echo "class='page-item disabled'"; } else { echo "class='page-item'"; } ?>>
+                <a class="page-link" <?php if($page_no > 1){
+                echo "href='?page_no=$previous_page'";
+                } ?>>Previous</a>
+                </li>
+                    
+
+                <li <?php if($page_no >= $total_no_of_pages){
+                    echo "class='disabled page-item'";
+                } else {
+                    echo "page-item'";
+                } 
+                ?>>
+                <a class="page-link" <?php if($page_no < $total_no_of_pages) {
+                            echo "href='?page_no=$next_page'";
+                    } ?>
+                >Next</a>
+                </li>
+
+                
+                <?php if($page_no < $total_no_of_pages){
+                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
+                } ?>
+            </ul>
+            <div>
+                <strong>Page <?php echo $page_no." of ".$total_no_of_pages; ?></strong>
+            </div>
+        </nav>
+    </div>
 </div>
 
-<nav aria-label="Receipts navigation">
-    <ul class="pagination">
-        <?php if($page_no > 1){
-        echo "<li class=\"page-item\"><a class=\"page-link\" href='?page_no=1'>First Page</a></li>";
-        } ?>
-
-
-        <li <?php if($page_no <= 1){ echo "class='page-item disabled'"; } else { echo "class='page-item'"; } ?>>
-        <a class="page-link" <?php if($page_no > 1){
-        echo "href='?page_no=$previous_page'";
-        } ?>>Previous</a>
-        </li>
-            
-
-        <li <?php if($page_no >= $total_no_of_pages){
-            echo "class='disabled page-item'";
-        } else {
-            echo "page-item'";
-        } 
-        ?>>
-        <a class="page-link" <?php if($page_no < $total_no_of_pages) {
-                    echo "href='?page_no=$next_page'";
-            } ?>
-        >Next</a>
-        </li>
-
-        
-        <?php if($page_no < $total_no_of_pages){
-        echo "<li class=\"page-item\"><a class=\"page-link\" href='?page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
-        } ?>
-    </ul>
-</nav>
 
 
 <script src="../js/receiptList.js"></script>

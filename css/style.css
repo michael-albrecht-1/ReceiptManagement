@@ -23,8 +23,8 @@ h1 {
     width: 100vw;
 }
 
-#filter-form > .row {
-    margin-left: 0px;
+#filter-form > div {
+    margin: 2em 0;
 }
 
 .update-receipt {
