@@ -3,10 +3,10 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ## To DO
 
-- home page list -> ajout ticket ?
-- supprimer un ticket ? vrai suppression ou table archive ?
-- gérer des profils ? utilisateur/comptable
-- page export ou ajouter des filtres de date sur la page de liste des tickets et un bouton export ?
+- quand photo prise depuis portable puis modif ticket sur pc la photo dépasse la largeur de l'écran
+- avec l'index à la racine du site
+- en modif d'un ticket ajouter un bouton "valider et pointer" pour la comtpa. Ce bouton valider, passe le ticket en pointé et appelle le ticket avec l'id suivant
+- ajouter des filtres de date sur la page de liste des tickets ?
 - export CSV : DATE // TYPE // FOURNISSEUR // MONTANT HT // TAUX TVA // MONTANT TVA // MONTANT TTC // VALIDATION FINAL?
 
 ## Fonctionnalitées

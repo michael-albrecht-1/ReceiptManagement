@@ -6,7 +6,7 @@
 
     // Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
     if (!isset($_SESSION['username'])) {
-        header("Location: php/login.php");
+        header("Location: login.php");
     }
 ?>
 
