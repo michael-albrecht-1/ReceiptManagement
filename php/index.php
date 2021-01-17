@@ -86,7 +86,7 @@
 
 <?= $msg ?? "" ?>
 
-<form method="post" action="" name="receipt" enctype="multipart/form-data">
+<form method="post" action="index.php" name="receipt" enctype="multipart/form-data">
     <input id="receiptid" name="receiptid" type="hidden" value="<?= $_GET['id'] ?? "" ?>">
     <fieldset>
     <div class="form-group row">
