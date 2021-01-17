@@ -10,7 +10,8 @@ let preloadReceiptPhoto = (event) => {
 
 
 window.addEventListener("DOMContentLoaded", () => {
-    tva.init();
+	tva.init();
+	document.querySelector("#photo").addEventListener("change", preloadReceiptPhoto);
 })
 
 

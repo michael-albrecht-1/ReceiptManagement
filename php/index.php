@@ -13,16 +13,30 @@
 <h1>Liste des tickets</h1>
 
 <form method="get" action="" id="filter-form">
-        <div class="row">
-            <div class="form-group isChecked">
-                <label for="ischecked">Pointé</label>
-                <select multiple size = 2 class="form-control" name="isChecked[]" required>
-                    <option value="true">oui</option>
-                    <option value="false">non</option>
-                </select>
-            </div>
+            <fieldset class="form-group">
+                <legend>Pointé</legend>
+                <div class="form-check">
+                    <label class="form-check-label">
+                    <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-yes" value="isChecked-yes">
+                    Oui
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                    <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-no" value="isChecked-no">
+                    Non
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                    <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-all" value="isChecked-all">
+                    Les deux
+                    </label>
+                </div>
+                </div>
+            </fieldset>
 
-            <button type="submit" name="filter" class="btn btn-primary submitListReceiptFilters">Valider</button>
+            <button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button>
         </div> 
 </form>
 
@@ -68,15 +82,21 @@
 
 
     // ---- checked filter -> set a cookie  
-    if ( isset($_GET['filter']) && isset($_GET['isChecked']) ) 
+    if (isset($_GET['isChecked']) ) 
     {
-        if ( count($_GET['isChecked']) == 1) {
-            $checkedSQL = "checked=" .  $_GET['isChecked'][0];
-        } elseif ( (count($_GET['isChecked']) == 0) || (count($_GET['isChecked']) == 2) ){
-            $checkedSQL = "checked=" . $_GET['isChecked'][0] . " OR " . "checked = " . $_GET['isChecked'][1];
+        $isChecked = $_GET['isChecked'];
+        var_dump($isChecked);
+        if ( $isChecked == "isChecked-yes") {
+            $checkedSQL = "checked=true";
+        } elseif ( $isChecked == "isChecked-no") {
+            $checkedSQL = "checked=false";
+        } 
+        else {
+            $checkedSQL = "checked=true OR checked=false";
              
         }
         setcookie("isChecked", $checkedSQL,  time() + 2592000);
+        setcookie("isCheckedJS", $_GET['isChecked'],  time() + 2592000);
         $req = "SELECT * FROM `receipts` WHERE $checkedSQL ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
     } elseif ( isset($_COOKIE['isChecked']) ){
         $isCheckedcookie = $_COOKIE["isChecked"];

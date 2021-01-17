@@ -3,7 +3,6 @@ let tva = {
     init: () => {
         tva.getTVAWhenUpdateReceipt();
         document.querySelector("#receiptCategory").addEventListener("change", (event) => tva.handleSelectChange(event.target.value));
-        document.querySelector("#photo").addEventListener("change", preloadReceiptPhoto);
     },
 
     // update TVA when a type of recept is selected !
@@ -15,37 +14,22 @@ let tva = {
         let tva4Node = document.querySelector("#tva4");
         switch (selectedType) {
             case "0":
-                tva1Node.checked = false;
-                tva2Node.checked = false;
                 tva3Node.checked = true;
-                tva4Node.checked = false;
-                break;
+                return;
             case "1":
-                tva1Node.checked = false;
-                tva2Node.checked = false;
-                tva3Node.checked = false;
                 tva4Node.checked = true;
-                break;
+                return;
             case "2":
-                tva1Node.checked = false;
-                tva2Node.checked = false;
-                tva3Node.checked = false;
                 tva4Node.checked = true;
-                break;
+                return;
             case "3":
                 tva1Node.checked = true;
-                tva2Node.checked = false;
-                tva3Node.checked = false;
-                tva4Node.checked = false;
-                break;
+                return;
             case "4":
-                tva1Node.checked = false;
-                tva2Node.checked = false;
-                tva3Node.checked = false;
                 tva4Node.checked = true;
-                break;
+                return;
             default:
-                break;
+                return;
         }
 
     },
