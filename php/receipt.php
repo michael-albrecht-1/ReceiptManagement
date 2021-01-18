@@ -30,7 +30,6 @@
         } else  {
           $picture = $_POST['uploadSrc'];
         }
-        var_dump($_POST);
         $date = $_POST['date'];
         $receiptCategory =  $_POST['receiptCategory'];
         $provider = mysqli_real_escape_string($conn, $_POST['provider']);
@@ -191,15 +190,17 @@
 
     <button type="submit" name="upload" class="btn btn-primary">Valider</button>
     <?php
-    $currentId = $_GET['id'];
-    $req = "SELECT * FROM receipts WHERE id=$currentId";
-    $result = mysqli_query($conn, $req);
-    $row = mysqli_fetch_array($result);
-
-    if ($row['checked'] == 0) {
-      echo '<button type="submit" name ="checkReceiptAndSelectNext" class="btn btn-info">Pointer et suivant</button>';
+    if (isset($_GET['id'])){
+      $currentId = $_GET['id'];
+      $req = "SELECT * FROM receipts WHERE id=$currentId";
+      $result = mysqli_query($conn, $req);
+      $row = mysqli_fetch_array($result);
+      
+      if ($row['checked'] == 0) {
+        echo '<button type="submit" name ="checkReceiptAndSelectNext" class="btn btn-info">Pointer et suivant</button>';
+      }
     }
-
+      
       ?>
     
 

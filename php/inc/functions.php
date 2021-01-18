@@ -26,7 +26,7 @@ function getFirstReceiptToCheck($conn) {
   $req = "SELECT * 
   FROM receipts
   WHERE checked=false
- ORDER BY id ASC
+ ORDER BY `date_emission` ASC, `id` ASC
  LIMIT 1;";
     
     $result = mysqli_query($conn, $req);
@@ -65,15 +65,17 @@ function getLinkWithParamsFromRow($row, $receiptCategories) {
   $category = formatCategory($row['category'], $receiptCategories);
   $tva = formatTva($row['tva']);
   $row['checked'] ? $isChecked = "oui" : $isChecked = "non";
+  $provider = urlencode($row['provider'] );
+  $description = urlencode($row['description']);
 
   return 'index.php' .
               '?id=' . $row['id'] .
               '&photo=' . $row['photo'] .
               '&date=' . $row['date_emission'] .
               '&receiptCategory=' . $category .
-              '&provider=' . $row['provider'] .
+              '&provider=' . $provider .
               '&tva=' . $tva .
               '&amount=' . $row['montant_ttc'] .
               '&isChecked=' . $isChecked .
-              '&description=' . $row['description'];
+              '&description=' . $description;
 }
