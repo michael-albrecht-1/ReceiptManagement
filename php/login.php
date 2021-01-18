@@ -33,7 +33,7 @@
       $rows = mysqli_num_rows($result);
       if($rows==1){
           $_SESSION['username'] = $username;
-          header("Location: index.php");
+          header("Location: ../index.php");
       }else{
         $message = "Le nom d'utilisateur ou le mot de passe est incorrect.";
       }

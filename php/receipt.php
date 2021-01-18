@@ -1,17 +1,8 @@
 <?php
-    require __DIR__ . '/inc/header.tpl.php';
-    require __DIR__ . '/config.php';
-    require __DIR__ . '/inc/functions.php';
-    require __DIR__ . '/inc/data.php';
-
-    // Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
-    if (!isset($_SESSION['username'])) {
-        header("Location: login.php");
-    }
 
     // en modif d'un ticket, on récupère le nom de la photo
     if ( isset($_GET['photo']) ) {
-      $srcPhoto = "../pictures/".basename($_GET['photo']);
+      $srcPhoto = "pictures/".basename($_GET['photo']);
     }
 
     // en modif d'un ticket récupérer si c'est pointé ou pas
@@ -35,7 +26,7 @@
           // On récupère le nom de l'image
           $picture = $_FILES['photo']['name'];
           // répertoire de stockage des images
-          $target = "../pictures/".basename($picture);
+          $target = "pictures/".basename($picture);
         } else  {
           $picture = $_POST['uploadSrc'];
         }
@@ -191,9 +182,6 @@
 
 </form>
 
-<script src="../js/tva.js"></script>
-<script src="../js/uploadReceipt.js"></script>
+<script src="js/tva.js"></script>
+<script src="js/uploadReceipt.js"></script>
 
-<?php
-    require __DIR__ . '/inc/footer.tpl.php';
-?>

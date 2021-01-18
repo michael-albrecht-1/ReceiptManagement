@@ -1,12 +1,10 @@
 <?php
 
-    require __DIR__ . '/inc/header.tpl.php';
-    require __DIR__ . '/config.php';
 
     // Vérifiez que l'utilisateur est connecté avec le compte "admin", sinon redirigez-le vers la page de connexion
     if (true) {
         if ($_SESSION['username'] !== 'admin') {
-            header("Location: logout.php");
+            header("Location: php/logout.php");
         }
     }
 
@@ -28,7 +26,7 @@
         if($res){
         echo "<div class='sucess'>
                 <h3>Le compte a été créé avec succès.</h3>
-                <p>Cliquez ici pour vous <a href='login.php'>connecter</a></p>
+                <p>Cliquez ici pour vous <a href='php/login.php'>connecter</a></p>
         </div>";
         }
     }else{

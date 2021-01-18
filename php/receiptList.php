@@ -1,19 +1,8 @@
-<?php
-    require __DIR__ . '/inc/header.tpl.php';
-    require __DIR__ . '/inc/functions.php';
-    require __DIR__ . '/config.php';
-    require __DIR__ . '/inc/data.php';
-
-    // Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
-    if (!isset($_SESSION['username'])) {
-        header("Location: login.php");
-    }
-?>
-
 <h1>Liste des tickets</h1>
 
 <form method="get" action="" id="filter-form">
     <div class="row"> 
+        <input id="page" name="page" type="hidden" value="2">
         <div>  
             <legend>Pointé</legend>
             <div class="form-check">
@@ -180,13 +169,13 @@
         <nav aria-label="Receipts navigation">
             <ul class="pagination">
                 <?php if($page_no > 1){
-                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page_no=1'>First Page</a></li>";
+                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page=2&page_no=1'>First Page</a></li>";
                 } ?>
 
 
                 <li <?php if($page_no <= 1){ echo "class='page-item disabled'"; } else { echo "class='page-item'"; } ?>>
                 <a class="page-link" <?php if($page_no > 1){
-                echo "href='?page_no=$previous_page'";
+                echo "href='?page=2&page_no=$previous_page'";
                 } ?>>Previous</a>
                 </li>
                     
@@ -198,14 +187,14 @@
                 } 
                 ?>>
                 <a class="page-link" <?php if($page_no < $total_no_of_pages) {
-                            echo "href='?page_no=$next_page'";
+                            echo "href='?page=2&page_no=$next_page'";
                     } ?>
                 >Next</a>
                 </li>
 
                 
                 <?php if($page_no < $total_no_of_pages){
-                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
+                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page=2&page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
                 } ?>
             </ul>
             <div>
@@ -217,7 +206,4 @@
 
 
 
-<script src="../js/receiptList.js"></script>
-<?php
-    require __DIR__ . '/inc/footer.tpl.php';
-?>
+<script src="js/receiptList.js"></script>
