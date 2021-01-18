@@ -1,6 +1,5 @@
 <?php
 
-
 // conserve que les $length premiers caractères d'une chaine et ajoute ... à la fin
 function truncate($string,$length=350,$append="&hellip;") {
     $string = trim($string);
@@ -21,4 +20,60 @@ function sendMessage($message, $type) {
   } else {
     return "<div class=\"col-lg-4 alert alert-danger alert-dismissible text-center\"><button type=\"button\" class=\"close\" data-bs-dismiss=\"alert\">&times;</button>". $message ."</div>";
   }
+}
+
+function getFirstReceiptToCheck($conn) {
+  $req = "SELECT * 
+  FROM receipts
+  WHERE checked=false
+ ORDER BY id ASC
+ LIMIT 1;";
+    
+    $result = mysqli_query($conn, $req);
+
+    $row = mysqli_fetch_array($result);
+
+    return $row;
+
+}
+
+function formatCategory ($rowCategory, $receiptCategories) {
+  foreach ($receiptCategories as $index => $category) {
+    if ($index == $rowCategory) {
+        return $category;
+    }
+  }
+}
+
+function formatTva ($rowTva) {
+  if ($rowTva =='tva1') 
+  {
+      return "0";
+  } elseif ($rowTva =='tva2')
+  {
+      return "5.5";
+  } elseif ($rowTva =='tva3')
+  {
+      return "10";
+  }elseif ($rowTva =='tva4')
+  {
+      return "20";
+  }
+}
+
+function getLinkWithParamsFromRow($row, $receiptCategories) {
+  $category = formatCategory($row['category'], $receiptCategories);
+  $tva = formatTva($row['tva']);
+  $row['checked'] ? $isChecked = "oui" : $isChecked = "non";
+
+  return 'index.php' .
+              '?id=' . $row['id'] .
+              '&photo=' . $row['photo'] .
+              '&date=' . $row['date_emission'] .
+              '&receiptCategory=' . $category .
+              '&provider=' . $row['provider'] .
+              '&tva=' . $tva .
+              '&amount=' . $row['montant_ttc'] .
+              '&isChecked=' . $isChecked .
+              '&description=' . $row['description'];
 }

@@ -1,3 +1,5 @@
+
+
 <h1>Liste des tickets</h1>
 
 <form method="get" action="" id="filter-form">
@@ -25,6 +27,12 @@
             </div>
         </div>
         <button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button>
+
+        <?php // link to the olded receipt not checked
+            $firstReceiptToCheck = getFirstReceiptToCheck($conn);
+            $firstReceiptToCheckLink = getLinkWithParamsFromRow($firstReceiptToCheck, $receiptCategories);
+        ?>
+        <a href="<?= $firstReceiptToCheckLink; ?>"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>
     </div>
 </form>
 
@@ -105,28 +113,12 @@
         $amount = $fmt->formatCurrency($row['montant_ttc'], "EUR");
         $row['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
         $description = truncate($row['description'], 40);
+        $receiptCategory = formatCategory($row['category'], $receiptCategories);
+        $tva = formatTva($row['tva']);
 
-        // format categories
-        foreach ($receiptCategories as $index => $category) {
-            if ($index == $row['category']) {
-                $receiptCategory = $category;
-            }
-        }
+        // generate update receipt link
+        $updateReceiptLink = getLinkWithParamsFromRow($row, $receiptCategories);
 
-        // format TVA
-        if ($row['tva'] =='tva1') 
-        {
-            $tva = "0";
-        } elseif ($row['tva'] =='tva2')
-        {
-            $tva = "5.5";
-        } elseif ($row['tva'] =='tva3')
-        {
-            $tva = "10";
-        }elseif ($row['tva'] =='tva4')
-        {
-            $tva = "20";
-        }
         
         // format values end
      
@@ -140,17 +132,7 @@
             echo "<td>" . $isChecked . "</td>";
             echo "<td>" . $row['description'] . "</td>";
             echo "<td>
-                <a class='update-receipt' href=\"index.php" .
-                "?id=" . $row['id'] .
-                "&photo=" . $row['photo'] .
-                "&date=" . $row['date_emission'] .
-                "&receiptCategory=" . $receiptCategory .
-                "&provider=" . $row['provider'] .
-                "&tva=" . $tva .
-                "&amount=" . $row['montant_ttc'] .
-                "&isChecked=" . $isChecked .
-                "&description=" . $description .
-                "\">&#9998;</a>
+                <a class='update-receipt' href=" . $updateReceiptLink . ">&#9998;</a>
             </td>";
             
         echo "</tr>";
