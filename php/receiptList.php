@@ -40,7 +40,7 @@
     </div>
 </form>
 
-<table class="table table-hover">
+<table class="table">
 <thead>
     <tr class="table-dark">
       <th scope="col">Date</th>

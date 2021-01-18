@@ -133,7 +133,7 @@
     
     <div class="form-group row">
       <label for="montant">Montant TTC</label>
-      <input type="text" class="form-control" id="amountTTC" name="amountTTC" placeholder="Saisir le montant TTC" value="<?= $_GET['amount'] ?? "" ?>" required>
+      <input type="number" step="0.01" class="form-control" id="amountTTC" name="amountTTC" placeholder="Saisir le montant TTC" value="<?= $_GET['amount'] ?? "" ?>" required>
     </div>    
 
     <div class="row">
