@@ -21,7 +21,7 @@
 
 
     // traitement de l'envoi du formulaire
-    if (isset($_POST['upload'])) {
+    if (isset($_POST['upload']) || isset($_POST['checkReceiptAndSelectNext'])) {
         if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
           // On récupère le nom de l'image
           $picture = $_FILES['photo']['name'];
@@ -30,17 +30,17 @@
         } else  {
           $picture = $_POST['uploadSrc'];
         }
-
-        
-        isset($_POST['id']) ?  $id = $_POST['id'] : $id = ""; // in case of receipt update
+        var_dump($_POST);
         $date = $_POST['date'];
         $receiptCategory =  $_POST['receiptCategory'];
         $provider = mysqli_real_escape_string($conn, $_POST['provider']);
         $amountTTC = $_POST['amountTTC'];
         $tva = $_POST['tva'];
         $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
+        if (isset($_POST['checkReceiptAndSelectNext'])) {
+          $isChecked = 1;
+        }
         $description = mysqli_real_escape_string($conn, $_POST['description']);
-        
         if ($_POST['receiptid'] == "") { 
           $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$receiptCategory', '$provider', $amountTTC,'$tva','$isChecked','$description')";
           $result = mysqli_query($conn,$query);
@@ -49,7 +49,6 @@
           $query = "UPDATE `receipts` SET `photo`='$picture', `date_emission`='$date', `category`='$receiptCategory', `provider`='$provider', `montant_ttc`=$amountTTC, `tva`='$tva', `checked`='$isChecked', `description`='$description' WHERE `receipts`.id = '$id'";
           $result = mysqli_query($conn,$query);
         }
-
         
         // On importe l'image
         if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
@@ -63,6 +62,18 @@
         }else{
           $msg = sendMessage("Ça n'a pas fonctionné ! ", "danger");
         }
+
+      // if button check and next was clicked we go to the next receipt to check
+      if (isset($_POST['checkReceiptAndSelectNext'])) {
+        $nextReceiptToCheck = getFirstReceiptToCheck($conn);
+        $nextReceiptToCheckLink = getLinkWithParamsFromRow($nextReceiptToCheck, $receiptCategories);
+        if ($nextReceiptToCheck != null) {
+          header("Location: $nextReceiptToCheckLink");
+          $msg = sendMessage("Ticket pointé ! ", "success");
+        } else {
+          $msg = sendMessage("Tous les tickets ont été pointés ! ", "success");
+        }
+      }
     }
 ?>
 
@@ -179,6 +190,18 @@
     </div>
 
     <button type="submit" name="upload" class="btn btn-primary">Valider</button>
+    <?php
+    $currentId = $_GET['id'];
+    $req = "SELECT * FROM receipts WHERE id=$currentId";
+    $result = mysqli_query($conn, $req);
+    $row = mysqli_fetch_array($result);
+
+    if ($row['checked'] == 0) {
+      echo '<button type="submit" name ="checkReceiptAndSelectNext" class="btn btn-info">Pointer et suivant</button>';
+    }
+
+      ?>
+    
 
 </form>
 

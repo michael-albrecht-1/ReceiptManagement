@@ -30,9 +30,13 @@
 
         <?php // link to the olded receipt not checked
             $firstReceiptToCheck = getFirstReceiptToCheck($conn);
-            $firstReceiptToCheckLink = getLinkWithParamsFromRow($firstReceiptToCheck, $receiptCategories);
+            if ($firstReceiptToCheck != null) {
+                $firstReceiptToCheckLink = getLinkWithParamsFromRow($firstReceiptToCheck, $receiptCategories);
+                echo '<a href="' . $firstReceiptToCheckLink . '"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>';
+            }
+
         ?>
-        <a href="<?= $firstReceiptToCheckLink; ?>"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>
+        
     </div>
 </form>
 
