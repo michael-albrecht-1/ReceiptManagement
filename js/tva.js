@@ -1,18 +1,27 @@
 let tva = {
-
+    selectedCategory: null,
     init: () => {
-        tva.getTVAWhenUpdateReceipt();
-        document.querySelector("#receiptCategory").addEventListener("change", (event) => tva.handleSelectChange(event.target.value));
+        tva.getTVA();
+        document.querySelector("#receiptCategory").addEventListener("change", (event) => tva.handleSelectCategory(event.target.value));
     },
 
-    // update TVA when a type of recept is selected !
-    handleSelectChange: (selectedType) => {
+    // update TVA when a type of receipt is selected
+    handleSelectCategory: () => {
+        
+        console.log("ds");
+        optionNodes = document.querySelectorAll("option");
+            optionNodes.forEach(element => {
+                if (element.selected === true) {
+                    tva.selectedCategory = element.value;
+                }
+            })
         
         let tva1Node = document.querySelector("#tva1");
         let tva2Node = document.querySelector("#tva2");
         let tva3Node = document.querySelector("#tva3");
         let tva4Node = document.querySelector("#tva4");
-        switch (selectedType) {
+
+        switch (tva.selectedCategory) {
             case "0":
                 tva3Node.checked = true;
                 return;
@@ -34,20 +43,13 @@ let tva = {
 
     },
 
-    getTVAWhenUpdateReceipt: () => {
-        const queryString = window.location.search; // cherche si on recoit des paramètres dans l'URL
-        if (queryString == "") {
-            optionNodes = document.querySelectorAll("option");
-            optionNodes.forEach(element => {
-                if (element.selected === true) {
-                    tva.handleSelectChange(element.value);
-                }
-            });
-        } else {
-            const urlParams = new URLSearchParams(queryString);
-            const tva = urlParams.get('tva');
-        
-            console.log("on essaye de récup le taux de tva en update de ticket");
+    getTVA: () => {
+        const queryString = window.location.search; // GET params from URL
+        const urlParams = new URLSearchParams(queryString);
+        const tvaParam = urlParams.get('tva');
+        if (tvaParam == null) { // NEW RECEIPT CASE
+            tva.handleSelectCategory();
+        } else { // UPDATE RECEIPT CASE
             let tva1Input = document.querySelector("#tva1");
             let tva2Input = document.querySelector("#tva2");
             let tva3Input = document.querySelector("#tva3");
@@ -55,7 +57,7 @@ let tva = {
             console.log("param : " + tva);
         
             let idTva;
-            switch (tva) {
+            switch (tvaParam) {
                 case "0":
                     idTva = "tva1";
                     break;
@@ -71,9 +73,9 @@ let tva = {
                 default:
                     idTva = "tva4"
                     break;
-            }
+        }
           
-            if (tva1Input.id  == idTva) {
+        if (tva1Input.id  == idTva) {
                 tva1Input.checked = true;
             }   else {
                 tva1Input.checked = false;

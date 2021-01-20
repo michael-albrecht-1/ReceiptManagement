@@ -153,7 +153,7 @@
         </div>
         <div class="form-check">
           <label class="form-check-label">
-            <input type="radio" class="form-check-input tva-check" name="tva" id="tva3" value="tva3">
+            <input type="radio" class="form-check-input tva-check" name="tva" id="tva3" value="tva3" checked>
             10
           </label>
         </div>
