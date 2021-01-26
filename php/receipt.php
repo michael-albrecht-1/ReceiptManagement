@@ -188,7 +188,7 @@
       <textarea class="form-control" id="description" name="description" rows="3" maxlength="500"><?= $_GET['description'] ?? "" ?></textarea>
     </div>
 
-    <button type="submit" name="upload" class="btn btn-primary">Valider</button>
+    <button type="submit" name="upload" class="btn btn-primary mb-4">Valider</button>
     <?php
     if (isset($_GET['id'])){
       $currentId = $_GET['id'];
