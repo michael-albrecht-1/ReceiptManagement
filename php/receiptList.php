@@ -2,11 +2,23 @@
 
 <h1>Liste des tickets</h1>
 
-<form method="get" action="" id="filter-form">
-    <div class="row"> 
-        <input id="page" name="page" type="hidden" value="2">
-        <div>  
-            <legend>Pointé</legend>
+<form method="get" action="" id="filter-form" class="my-5">
+    <div class="form-row flex-wrap">
+        <div><input id="page" name="page" type="hidden" value="2"></div>
+        <div class="col-8 col-md-4 mb-4 pr-4 pb-4">
+            <div class="row">
+                <div class="col-12 pb-4">
+                    <label for="startDate">Date début</label>
+                    <input type="date" class="form-control" id="startDate" name="startDate"  value="<?= $_GET['startDate'] ?? date("Y-m-d", mktime(0, 0, 0, 7, 1, 2000)) ?>" required>
+                </div>
+                <div class="col-12">
+                    <label for="endDate">Date fin</label>
+                    <input type="date" class="form-control" id="endDate" name="endDate"  value="<?= $_GET['endDate'] ?? date("Y-m-d") ?>" required>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 col-md-3 pb-4">  
+            <label class="pl-3">Pointé</label>
             <div class="form-check">
                 <label class="form-check-label">
                 <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-yes" value="isChecked-yes">
@@ -26,17 +38,20 @@
                 </label>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button>
+    </div>
+    <div class="form-row">
+        <div class="col-4 col-md-3 col-lg-2"><button type="submit" class="btn btn-primary">Valider</button></div>
+        <div class="col-4 col-md-3 col-lg-2">
+            <?php // link to the olded receipt not checked
+                $firstReceiptToCheck = getFirstReceiptToCheck($conn);
+                if ($firstReceiptToCheck != null) {
+                    $firstReceiptToCheckLink = getLinkWithParamsFromRow($firstReceiptToCheck, $receiptCategories);
+                    echo '<a href="' . $firstReceiptToCheckLink . '"><button type="button" class="btn btn-info">Pointer</button></a>';
+                }
 
-        <?php // link to the olded receipt not checked
-            $firstReceiptToCheck = getFirstReceiptToCheck($conn);
-            if ($firstReceiptToCheck != null) {
-                $firstReceiptToCheckLink = getLinkWithParamsFromRow($firstReceiptToCheck, $receiptCategories);
-                echo '<a href="' . $firstReceiptToCheckLink . '"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>';
-            }
-
-        ?>
-        
+            ?>
+        </div>
+        <div class="col-4 col-md-3 col-lg-2"><a href="#"><button type="button" class="btn btn-info">Exporter</button></a></div>
     </div>
 </form>
 

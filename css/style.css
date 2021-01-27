@@ -23,10 +23,6 @@ h1 {
     width: 100%;
 }
 
-#filter-form > div {
-    margin: 2em 0;
-}
-
 .update-receipt {
     text-decoration: none;
 }
