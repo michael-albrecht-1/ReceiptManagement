@@ -128,6 +128,8 @@
     while ($row = mysqli_fetch_array($result)) { 
 
         // format values
+        $date = new DateTime($row['date_emission']);
+        $date = $date->format('d-m-Y');
         $fmt = new NumberFormatter( 'de_DE', NumberFormatter::CURRENCY );
         $amount = $fmt->formatCurrency($row['montant_ttc'], "EUR");
         $row['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
@@ -143,7 +145,7 @@
      
 
         echo "<tr>";
-            echo "<td>" . $row['date_emission'] . "</td>";
+            echo "<td>" . $date . "</td>";
             echo "<td>" . $receiptCategory . "</td>";
             echo "<td>" . $row['provider'] . "</td>";
             echo "<td>" . $tva . "</td>";
