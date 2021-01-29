@@ -19,8 +19,10 @@
         $isCheckedNo = "checked";
        }
 
+    // ============================================================================
+    // traitement de l'envoi du formulaire ========================================
+    // ============================================================================
 
-    // traitement de l'envoi du formulaire
     if (isset($_POST['upload']) || isset($_POST['checkReceiptAndSelectNext'])) {
         if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
           // On récupère le nom de l'image
@@ -49,7 +51,8 @@
           $result = mysqli_query($conn,$query);
         }
         
-        // On importe l'image
+
+        // On importe l'image ===
         if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
           if (move_uploaded_file($_FILES['photo']['tmp_name'], $target)) {
             sendMessage("L'import de l'image n'a pas fonctionné !", "danger");
@@ -74,6 +77,9 @@
         }
       }
     }
+    // ============================================================================
+    // fin de traitement de l'envoi du formulaire =================================
+    // ============================================================================
 ?>
 
 <?php 
