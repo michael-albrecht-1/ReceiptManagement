@@ -34,21 +34,21 @@
         }
         $date = $_POST['date'];
         $receiptCategory =  $_POST['receiptCategory'];
-        $provider = mysqli_real_escape_string($conn, $_POST['provider']);
+        $provider = $_POST['provider'];
         $amountTTC = $_POST['amountTTC'];
         $tva = $_POST['tva'];
         $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
         if (isset($_POST['checkReceiptAndSelectNext'])) {
           $isChecked = 1;
         }
-        $description = mysqli_real_escape_string($conn, $_POST['description']);
+        $description = $_POST['description'];
         if ($_POST['receiptid'] == "") { 
           $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$receiptCategory', '$provider', $amountTTC,'$tva','$isChecked','$description')";
-          $result = mysqli_query($conn,$query);
+          $result = $pdo->exec($query);
         }else { 
           $id = $_POST['receiptid'];
           $query = "UPDATE `receipts` SET `photo`='$picture', `date_emission`='$date', `category`='$receiptCategory', `provider`='$provider', `montant_ttc`=$amountTTC, `tva`='$tva', `checked`='$isChecked', `description`='$description' WHERE `receipts`.id = '$id'";
-          $result = mysqli_query($conn,$query);
+          $result = $pdo->exec($query);
         }
         
 
@@ -67,7 +67,7 @@
 
       // if button check and next was clicked we go to the next receipt to check
       if (isset($_POST['checkReceiptAndSelectNext'])) {
-        $nextReceiptToCheck = getFirstReceiptToCheck($conn);
+        $nextReceiptToCheck = getFirstReceiptToCheck($pdo);
         $nextReceiptToCheckLink = getLinkWithParamsFromRow($nextReceiptToCheck, $receiptCategories);
         if ($nextReceiptToCheck != null) {
           header("Location: $nextReceiptToCheckLink");
@@ -198,11 +198,10 @@
     <?php
     if (isset($_GET['id'])){
       $currentId = $_GET['id'];
-      $req = "SELECT * FROM receipts WHERE id=$currentId";
-      $result = mysqli_query($conn, $req);
-      $row = mysqli_fetch_array($result);
+      $sql = "SELECT * FROM receipts WHERE id=$currentId";
+      $result = $pdo->query($sql)->fetch();
       
-      if ($row['checked'] == 0) {
+      if ($result['checked'] == 0) {
         echo '<button type="submit" name ="checkReceiptAndSelectNext" class="btn btn-info">Pointer et suivant</button>';
       }
     }
