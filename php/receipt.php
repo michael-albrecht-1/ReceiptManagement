@@ -28,7 +28,7 @@
           // On récupère le nom de l'image
           $picture = $_FILES['photo']['name'];
           // répertoire de stockage des images
-          $target = "pictures/".basename($picture);
+          $target = "pictures_/".basename($picture);
         } else  {
           $picture = $_POST['uploadSrc'];
         }

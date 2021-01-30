@@ -22,21 +22,6 @@ function sendMessage($message, $type) {
   }
 }
 
-function getFirstReceiptToCheck($conn) {
-  $req = "SELECT * 
-  FROM receipts
-  WHERE checked=false
- ORDER BY `date_emission` ASC, `id` ASC
- LIMIT 1;";
-    
-    $result = mysqli_query($conn, $req);
-
-    $row = mysqli_fetch_array($result);
-
-    return $row;
-
-}
-
 function formatCategory ($rowCategory, $receiptCategories) {
   foreach ($receiptCategories as $index => $category) {
     if ($index == $rowCategory) {
@@ -59,6 +44,16 @@ function formatTva ($rowTva) {
   {
       return "20";
   }
+}
+
+function getFirstReceiptToCheck($pdo) {
+  $sql = "SELECT * 
+  FROM receipts
+  WHERE checked=false
+ ORDER BY `date_emission` ASC, `id` ASC
+ LIMIT 1;";
+    
+    return $pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
 }
 
 function getLinkWithParamsFromRow($row, $receiptCategories) {

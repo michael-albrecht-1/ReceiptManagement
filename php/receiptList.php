@@ -29,7 +29,7 @@
         <button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button>
 
         <?php // link to the olded receipt not checked
-            $firstReceiptToCheck = getFirstReceiptToCheck($conn);
+            $firstReceiptToCheck = getFirstReceiptToCheck($pdo);
             if ($firstReceiptToCheck != null) {
                 $firstReceiptToCheckLink = getLinkWithParamsFromRow($firstReceiptToCheck, $receiptCategories);
                 echo '<a href="' . $firstReceiptToCheckLink . '"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>';
@@ -85,14 +85,14 @@
         setcookie("isChecked", $checkedSQL,  time() + 2592000);
         setcookie("isCheckedJS", $_GET['isChecked'],  time() + 2592000);
         $where = 'WHERE ' . $checkedSQL;
-        $req = "SELECT * FROM `receipts` $where ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
+        $sql = "SELECT * FROM `receipts` $where ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
     } elseif ( isset($_COOKIE['isChecked']) ){
         $where = 'WHERE ' . $_COOKIE["isChecked"];
-        $req = "SELECT * FROM `receipts` $where ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
+        $sql = "SELECT * FROM `receipts` $where ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
     } else {
-        $req = "SELECT * FROM `receipts` ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
+        $sql = "SELECT * FROM `receipts` ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
     }
-    $result = mysqli_query($conn, $req);
+    $receipts = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     // ---------------------------
     
     // pagination -------------------------------------------------
@@ -102,54 +102,50 @@
         $paginateCountReq = "SELECT COUNT(*) As total_records FROM `receipts`";
     }
 
-    $result_count = mysqli_query($conn, $paginateCountReq);
-    $total_records = mysqli_fetch_array($result_count);
+    $result_count = $pdo->query($paginateCountReq);
+    $total_records = $result_count->fetch(PDO::FETCH_ASSOC);
     $total_records = $total_records['total_records'];
     $total_no_of_pages = ceil($total_records / $total_records_per_page);
     $second_last = $total_no_of_pages - 1; // total pages minus 1
     //----------------------------------------------------------------
 
 
-    while ($row = mysqli_fetch_array($result)) { 
+    foreach ($receipts as $receipt) { 
 
-        // format values
+        // ================
+        // format values ==
+        // ================
         $fmt = new NumberFormatter( 'de_DE', NumberFormatter::CURRENCY );
-        $amount = $fmt->formatCurrency($row['montant_ttc'], "EUR");
-        $row['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
-        $description = truncate($row['description'], 40);
-        $receiptCategory = formatCategory($row['category'], $receiptCategories);
-        $tva = formatTva($row['tva']);
+        $amount = $fmt->formatCurrency($receipt['montant_ttc'], "EUR");
+        $receipt['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
+        $description = truncate($receipt['description'], 40);
+        $receiptCategory = formatCategory($receipt['category'], $receiptCategories);
+        $tva = formatTva($receipt['tva']);
 
         // generate update receipt link
-        $updateReceiptLink = getLinkWithParamsFromRow($row, $receiptCategories);
+        $updateReceiptLink = getLinkWithParamsFromRow($receipt, $receiptCategories);
 
-        
-        // format values end
-     
+        // ===================
+        // format values end =
+        // ===================     
 
         echo "<tr>";
-            echo "<td>" . $row['date_emission'] . "</td>";
+            echo "<td>" . $receipt['date_emission'] . "</td>";
             echo "<td>" . $receiptCategory . "</td>";
-            echo "<td>" . $row['provider'] . "</td>";
+            echo "<td>" . $receipt['provider'] . "</td>";
             echo "<td>" . $tva . "</td>";
             echo "<td>" . $amount . "</td>";
             echo "<td>" . $isChecked . "</td>";
-            echo "<td>" . $row['description'] . "</td>";
-            echo "<td>
-                <a class='update-receipt' href=" . $updateReceiptLink . ">&#9998;</a>
-            </td>";
-            
+            echo "<td>" . $receipt['description'] . "</td>";
+            echo "<td><a class='update-receipt' href=" . $updateReceiptLink . ">&#9998;</a></td>";
         echo "</tr>";
-
-        
     }
-    mysqli_close($conn);
-
-
 ?> 
-
 </table>
 
+<!-- ======================== -->
+<!-- pagination ============= -->
+<!-- ======================== -->
 <div class="row">
     <div>
         <nav aria-label="Receipts navigation">
