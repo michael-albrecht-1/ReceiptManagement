@@ -25,32 +25,34 @@
 
     if (isset($_POST['upload']) || isset($_POST['checkReceiptAndSelectNext'])) {
         if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
-          // On récupère le nom de l'image
           $picture = $_FILES['photo']['name'];
-          // répertoire de stockage des images
           $target = "pictures_/".basename($picture);
         } else  {
           $picture = $_POST['uploadSrc'];
         }
-        $date = $_POST['date'];
-        $receiptCategory =  $_POST['receiptCategory'];
-        $provider = $_POST['provider'];
-        $amountTTC = $_POST['amountTTC'];
-        $tva = $_POST['tva'];
+
         $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
         if (isset($_POST['checkReceiptAndSelectNext'])) {
           $isChecked = 1;
         }
-        $description = $_POST['description'];
+
         if ($_POST['receiptid'] == "") { 
-          $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$receiptCategory', '$provider', $amountTTC,'$tva','$isChecked','$description')";
-          $result = $pdo->exec($query);
+          $sth = $pdo->prepare('INSERT INTO `receipts`(`photo`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES (:picture,:date, :receiptCategory, :provider, :amountTTC, :tva, :isChecked, :description)');
+
         }else { 
-          $id = $_POST['receiptid'];
-          $query = "UPDATE `receipts` SET `photo`='$picture', `date_emission`='$date', `category`='$receiptCategory', `provider`='$provider', `montant_ttc`=$amountTTC, `tva`='$tva', `checked`='$isChecked', `description`='$description' WHERE `receipts`.id = '$id'";
-          $result = $pdo->exec($query);
+          $sth = $pdo->prepare('UPDATE `receipts` SET `photo`=:picture, `date_emission`=:date, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
+          $sth->bindParam(':id', $_POST['receiptid'], PDO::PARAM_STR);          
         }
         
+        $sth->bindParam(':picture', $picture, PDO::PARAM_STR);
+        $sth->bindParam(':date', $_POST['date'], PDO::PARAM_STR);
+        $sth->bindParam(':receiptCategory', $_POST['receiptCategory'], PDO::PARAM_STR);
+        $sth->bindParam(':provider', $_POST['provider'], PDO::PARAM_STR);
+        $sth->bindParam(':amountTTC', $_POST['amountTTC'], PDO::PARAM_INT);
+        $sth->bindParam(':tva', $_POST['tva'], PDO::PARAM_STR);
+        $sth->bindParam(':isChecked', $isChecked, PDO::PARAM_STR);
+        $sth->bindParam(':description', $_POST['description'], PDO::PARAM_STR);
+        $result = $sth->execute();
 
         // On importe l'image ===
         if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
@@ -95,6 +97,7 @@
 
 <form method="post" action="index.php" name="receipt" enctype="multipart/form-data">
     <input id="receiptid" name="receiptid" type="hidden" value="<?= $_GET['id'] ?? "" ?>">
+
     <fieldset>
     <div class="form-group row">
       <label for="photo">Prendre une photo</label>
@@ -106,8 +109,6 @@
         <input id="uploadSrc" name="uploadSrc" type="hidden" value="<?= $_GET['photo'] ?? "" ?>">
     </div>
     
-  
-
     <div class="form-group row">
       <label for="date">Date</label>
       <input type="date" class="form-control" id="date" name="date"  value="<?= $_GET['date'] ?? date("Y-m-d") ?>" required>
