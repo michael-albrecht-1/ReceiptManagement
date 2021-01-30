@@ -6,7 +6,7 @@ class DB {
   // (A) CONSTRUCTOR - CONNECT TO DATABASE
   private $pdo = null;
   private $stmt = null;
-  public $error = "";
+  public $msg = "";
   function __construct () {
     try {
       $this->pdo = new PDO(
@@ -44,97 +44,57 @@ class DB {
   }
 
   function saveReceipt() {
-    if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
-        $picture = $_FILES['photo']['name'];
-        $target = "pictures_/".basename($picture);
-    } else  {
-        $picture = $_POST['uploadSrc'];
-    }
-
-    // WIP
-    $picture_data = 'WIP';
-
-    $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
-    if (isset($_POST['checkReceiptAndSelectNext'])) {
-        $isChecked = 1;
-    }
-
-    if ($_POST['receiptid'] == "") { 
-        $sth = $this->pdo->prepare('INSERT INTO `receipts`(`photo_name`, `photo_data`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES (:photo_name, :photo_data, :date, :receiptCategory, :provider, :amountTTC, :tva, :isChecked, :description)');
-
-    }else { 
-        $sth = $this->pdo->prepare('UPDATE `receipts` SET `photo_name`=:photo_name, `photo_data`=:photo_data, `date_emission`=:date, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
-        $sth->bindParam(':id', $_POST['receiptid'], PDO::PARAM_STR);          
-    }
-    
-    $sth->bindParam(':photo_name', $picture, PDO::PARAM_STR);
-    $sth->bindParam(':photo_data', $picture_data, PDO::PARAM_STR);
-    $sth->bindParam(':date', $_POST['date'], PDO::PARAM_STR);
-    $sth->bindParam(':receiptCategory', $_POST['receiptCategory'], PDO::PARAM_STR);
-    $sth->bindParam(':provider', $_POST['provider'], PDO::PARAM_STR);
-    $sth->bindParam(':amountTTC', $_POST['amountTTC'], PDO::PARAM_INT);
-    $sth->bindParam(':tva', $_POST['tva'], PDO::PARAM_STR);
-    $sth->bindParam(':isChecked', $isChecked, PDO::PARAM_STR);
-    $sth->bindParam(':description', $_POST['description'], PDO::PARAM_STR);
-    $result = $sth->execute();
-
-    // On importe l'image ===
-    if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
-        if (move_uploaded_file($_FILES['photo']['tmp_name'], $target)) {
-        sendMessage("L'import de l'image n'a pas fonctionné !", "danger");
-        }
-    }
-
-    if ($result) {
-        $msg = sendMessage("Ticket enregistré ! ", "success");
-    }else{
-        $msg = sendMessage("Ça n'a pas fonctionné ! ", "danger");
-    }
-
-    // if button check and next was clicked we go to the next receipt to check
-    if (isset($_POST['checkReceiptAndSelectNext'])) {
-        $nextReceiptToCheck = $this->getFirstReceiptToCheck();
-        $receiptCategories = ["restaurant", "gasoil", "hôtel", "péage", "autre"];  
-        $nextReceiptToCheckLink = getLinkWithParamsFromRow($nextReceiptToCheck, $receiptCategories);
-        if ($nextReceiptToCheck != null) {
-        header("Location: $nextReceiptToCheckLink");
-        $msg = sendMessage("Ticket pointé ! ", "success");
-        } else {
-        $msg = sendMessage("Tous les tickets ont été pointés ! ", "success");
-        }
-    }
-  }
-
-  // (C) SAVE IMAGE (FROM UPLOAD)
-  function saveImg () {
     try {
-      $this->stmt = $this->pdo->prepare(
-        "INSERT INTO `images` (`img_name`, `img_data`) VALUES (?,?)"
-      );
-      $this->stmt->execute([
-        $_FILES["upload"]["name"], file_get_contents($_FILES['upload']['tmp_name'])
-      ]);
+        $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
+        if (isset($_POST['checkReceiptAndSelectNext'])) {
+            $isChecked = 1;
+        }
+
+        if ($_POST['receiptid'] == "") { 
+            $sth = $this->pdo->prepare('INSERT INTO `receipts`(`photo_name`, `photo_data`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES (:photo_name, :photo_data, :date, :receiptCategory, :provider, :amountTTC, :tva, :isChecked, :description)');
+
+        }else { 
+            $sth = $this->pdo->prepare('UPDATE `receipts` SET `photo_name`=:photo_name, `photo_data`=:photo_data, `date_emission`=:date, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
+            $sth->bindParam(':id', $_POST['receiptid'], PDO::PARAM_STR);          
+        }
+
+        // WIP when update receipt but photo not changed : photo actually deleted
+        $photoData = file_get_contents($_FILES['photo']['tmp_name']);
+        $sth->bindParam(':photo_name',  $_FILES["photo"]["name"], PDO::PARAM_STR);
+        $sth->bindParam(':photo_data', $photoData);
+
+        $sth->bindParam(':date', $_POST['date'], PDO::PARAM_STR);
+        $sth->bindParam(':receiptCategory', $_POST['receiptCategory'], PDO::PARAM_STR);
+        $sth->bindParam(':provider', $_POST['provider'], PDO::PARAM_STR);
+        $sth->bindParam(':amountTTC', $_POST['amountTTC'], PDO::PARAM_INT);
+        $sth->bindParam(':tva', $_POST['tva'], PDO::PARAM_STR);
+        $sth->bindParam(':isChecked', $isChecked, PDO::PARAM_STR);
+        $sth->bindParam(':description', $_POST['description'], PDO::PARAM_STR);
+        $result = $sth->execute();
+
     } catch (Exception $ex) {
-      $this->error = $ex->getMessage();
-      return false;
+        $this->msg = sendMessage($ex->getMessage(), 'danger');
+        return false;
     }
+    $this->msg= sendMessage("Ticket enregistré ! ", "success");
     return true;
   }
 
-  // (D) GET IMAGE
+ 
+  //  get photo name
   function getImg ($name) {
     $this->stmt = $this->pdo->prepare(
-      "SELECT `img_data` FROM `images` WHERE `img_name`=?"
+      "SELECT `photo_data` FROM `receipts` WHERE `photo_name`=?"
     );
     $this->stmt->execute([$name]);
     $img = $this->stmt->fetch();
-    return $img['img_data'];
+    return $img['photo_data'];
   }
   
-  // (E) GENERATE BASE64 ENCODED HTML TAG
-  function showImg ($name) {
-    $img = base64_encode($this->get($name));
+  //  generate src for update receipt photo preload
+  function getImgSrc ($name) {
+    $img = base64_encode($this->getImg($name));
     $ext = pathinfo($name, PATHINFO_EXTENSION);
-    echo "<img src='data:image/jpg;base64,".$img."'/>";
+    return 'data:image/jpg;base64,' . $img;
   }
 }

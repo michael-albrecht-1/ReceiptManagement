@@ -1,12 +1,9 @@
 <?php
 
-    // en modif d'un ticket, on récupère le nom de la photo
-    if ( isset($_GET['photo']) ) {
-      $srcPhoto = "pictures/".basename($_GET['photo']);
-    }
-
-    // en modif d'un ticket récupérer si c'est pointé ou pas
-       if (isset($_GET['isChecked'])) {
+    // ============================================================================
+    // receipt update =============================================================
+    // ============================================================================
+    if (isset($_GET['isChecked'])) {
         if ($_GET['isChecked'] == "oui") {
           $isCheckedYes = "checked";
           $isCheckedNo = "";
@@ -14,20 +11,41 @@
           $isCheckedYes = "";
           $isCheckedNo = "checked";
         }
-       } else {
-        $isCheckedYes = "";
-        $isCheckedNo = "checked";
-       }
+    } else {
+    $isCheckedYes = "";
+    $isCheckedNo = "checked";
+    }
+
+    if (isset($_GET['photo'])){
+        $preloadSrc = $db->getImgSrc($_GET['photo']);
+    }
+    // ============================================================================
+    // receipt update end==========================================================
+    // ============================================================================
+
 
     // ============================================================================
-    // traitement de l'envoi du formulaire ========================================
+    // saveReceipt ================================================================
     // ============================================================================
 
     if (isset($_POST['upload']) || isset($_POST['checkReceiptAndSelectNext'])) {
-        $db->saveReceipt();
+        $result = $db->saveReceipt();
+
+    // if saveReceipt worked  and button check and next was clicked we go to the next receipt to check
+    if ($result && isset($_POST['checkReceiptAndSelectNext'])) {
+        $nextReceiptToCheck = $this->getFirstReceiptToCheck();
+        $receiptCategories = ["restaurant", "gasoil", "hôtel", "péage", "autre"];  
+        $nextReceiptToCheckLink = getLinkWithParamsFromRow($nextReceiptToCheck, $receiptCategories);
+        if ($nextReceiptToCheck != null) {
+        header("Location: $nextReceiptToCheckLink");
+        $msg = sendMessage("Ticket pointé ! ", "success");
+        } else {
+        $msg = sendMessage("Tous les tickets ont été pointés ! ", "success");
+        }
+    }
     }
     // ============================================================================
-    // fin de traitement de l'envoi du formulaire =================================
+    // saveReceipt end=============================================================
     // ============================================================================
 ?>
 
@@ -40,7 +58,7 @@
 
 ?>
 
-<?= $msg ?? "" ?>
+<?= $db->msg ?? "" ?>
 
 <form method="post" action="index.php" name="receipt" enctype="multipart/form-data">
     <input id="receiptid" name="receiptid" type="hidden" value="<?= $_GET['id'] ?? "" ?>">
@@ -52,7 +70,7 @@
     </div>
 
     <div class="form-group row">
-        <img id="preload" src="<?= $srcPhoto ?? "" ?>">
+        <img id="preload" src='<?= $preloadSrc ?? '' ?>'/>
         <input id="uploadSrc" name="uploadSrc" type="hidden" value="<?= $_GET['photo'] ?? "" ?>">
     </div>
     
