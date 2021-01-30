@@ -46,16 +46,6 @@ function formatTva ($rowTva) {
   }
 }
 
-function getFirstReceiptToCheck($pdo) {
-  $sql = "SELECT * 
-  FROM receipts
-  WHERE checked=false
- ORDER BY `date_emission` ASC, `id` ASC
- LIMIT 1;";
-    
-    return $pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
-}
-
 function getLinkWithParamsFromRow($row, $receiptCategories) {
   $category = formatCategory($row['category'], $receiptCategories);
   $tva = formatTva($row['tva']);
@@ -65,7 +55,7 @@ function getLinkWithParamsFromRow($row, $receiptCategories) {
 
   return 'index.php' .
               '?id=' . $row['id'] .
-              '&photo=' . $row['photo'] .
+              '&photo=' . $row['photo_name'] .
               '&date=' . $row['date_emission'] .
               '&receiptCategory=' . $category .
               '&provider=' . $provider .

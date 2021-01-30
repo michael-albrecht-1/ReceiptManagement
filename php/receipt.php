@@ -24,60 +24,7 @@
     // ============================================================================
 
     if (isset($_POST['upload']) || isset($_POST['checkReceiptAndSelectNext'])) {
-        if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
-          $picture = $_FILES['photo']['name'];
-          $target = "pictures_/".basename($picture);
-        } else  {
-          $picture = $_POST['uploadSrc'];
-        }
-
-        $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
-        if (isset($_POST['checkReceiptAndSelectNext'])) {
-          $isChecked = 1;
-        }
-
-        if ($_POST['receiptid'] == "") { 
-          $sth = $pdo->prepare('INSERT INTO `receipts`(`photo`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES (:picture,:date, :receiptCategory, :provider, :amountTTC, :tva, :isChecked, :description)');
-
-        }else { 
-          $sth = $pdo->prepare('UPDATE `receipts` SET `photo`=:picture, `date_emission`=:date, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
-          $sth->bindParam(':id', $_POST['receiptid'], PDO::PARAM_STR);          
-        }
-        
-        $sth->bindParam(':picture', $picture, PDO::PARAM_STR);
-        $sth->bindParam(':date', $_POST['date'], PDO::PARAM_STR);
-        $sth->bindParam(':receiptCategory', $_POST['receiptCategory'], PDO::PARAM_STR);
-        $sth->bindParam(':provider', $_POST['provider'], PDO::PARAM_STR);
-        $sth->bindParam(':amountTTC', $_POST['amountTTC'], PDO::PARAM_INT);
-        $sth->bindParam(':tva', $_POST['tva'], PDO::PARAM_STR);
-        $sth->bindParam(':isChecked', $isChecked, PDO::PARAM_STR);
-        $sth->bindParam(':description', $_POST['description'], PDO::PARAM_STR);
-        $result = $sth->execute();
-
-        // On importe l'image ===
-        if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
-          if (move_uploaded_file($_FILES['photo']['tmp_name'], $target)) {
-            sendMessage("L'import de l'image n'a pas fonctionné !", "danger");
-          }
-        }
-
-        if ($result) {
-          $msg = sendMessage("Ticket enregistré ! ", "success");
-        }else{
-          $msg = sendMessage("Ça n'a pas fonctionné ! ", "danger");
-        }
-
-      // if button check and next was clicked we go to the next receipt to check
-      if (isset($_POST['checkReceiptAndSelectNext'])) {
-        $nextReceiptToCheck = getFirstReceiptToCheck($pdo);
-        $nextReceiptToCheckLink = getLinkWithParamsFromRow($nextReceiptToCheck, $receiptCategories);
-        if ($nextReceiptToCheck != null) {
-          header("Location: $nextReceiptToCheckLink");
-          $msg = sendMessage("Ticket pointé ! ", "success");
-        } else {
-          $msg = sendMessage("Tous les tickets ont été pointés ! ", "success");
-        }
-      }
+        $db->saveReceipt();
     }
     // ============================================================================
     // fin de traitement de l'envoi du formulaire =================================
@@ -194,20 +141,23 @@
       <label for="exampleTextarea">Description</label>
       <textarea class="form-control" id="description" name="description" rows="3" maxlength="500"><?= $_GET['description'] ?? "" ?></textarea>
     </div>
-
-    <button type="submit" name="upload" class="btn btn-primary mb-4">Valider</button>
-    <?php
-    if (isset($_GET['id'])){
-      $currentId = $_GET['id'];
-      $sql = "SELECT * FROM receipts WHERE id=$currentId";
-      $result = $pdo->query($sql)->fetch();
       
-      if ($result['checked'] == 0) {
-        echo '<button type="submit" name ="checkReceiptAndSelectNext" class="btn btn-info">Pointer et suivant</button>';
+    <div class="row mb-4">
+      <button type="submit" name="upload" class="btn btn-primary mr-2">Valider</button>
+      <?php
+      if (isset($_GET['id'])){
+        $currentId = $_GET['id'];
+        $sql = "SELECT * FROM receipts WHERE id=$currentId";
+        $result = $db->queryFetch($sql);
+        
+        if ($result['checked'] == 0) {
+          echo '<button type="submit" name ="checkReceiptAndSelectNext" class="btn btn-info">Pointer et suivant</button>';
+        }
       }
-    }
-      
       ?>
+    </div>
+      
+   
     
 
 </form>

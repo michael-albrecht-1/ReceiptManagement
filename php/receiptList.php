@@ -27,7 +27,7 @@
         <button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button>
 
         <?php // link to the olded receipt not checked
-            $firstReceiptToCheck = getFirstReceiptToCheck($pdo);
+            $firstReceiptToCheck = $db->getFirstReceiptToCheck();
             if ($firstReceiptToCheck != null) {
                 $firstReceiptToCheckLink = getLinkWithParamsFromRow($firstReceiptToCheck, $receiptCategories);
                 echo '<a href="' . $firstReceiptToCheckLink . '"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>';
@@ -90,7 +90,7 @@
     } else {
         $sql = "SELECT * FROM `receipts` ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
     }
-    $receipts = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    $receipts = $db->queryFetchAll($sql);
     // ---------------------------
     
     // pagination -------------------------------------------------
@@ -100,8 +100,7 @@
         $paginateCountReq = "SELECT COUNT(*) As total_records FROM `receipts`";
     }
 
-    $result_count = $pdo->query($paginateCountReq);
-    $total_records = $result_count->fetch();
+    $total_records = $db->queryFetch($paginateCountReq);
     $total_records = $total_records['total_records'];
     $total_no_of_pages = ceil($total_records / $total_records_per_page);
     $second_last = $total_no_of_pages - 1; // total pages minus 1

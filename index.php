@@ -1,14 +1,15 @@
 <?php
     require __DIR__ . '/php/inc/header.tpl.php';
     require __DIR__ . '/php/inc/functions.php';
-    require __DIR__ . '/php/config.php';
+    require __DIR__ . '/php/classes/DB.php';
     require __DIR__ . '/php/inc/data.php';
     
     // Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
     if (!isset($_SESSION['username'])) {
         header("Location: php/login.php");
     }
-
+    
+    $db = new DB();
 
     if (isset($_GET['page'])) {
         switch ($_GET['page']) {
