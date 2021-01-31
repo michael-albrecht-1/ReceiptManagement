@@ -32,25 +32,15 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 ## Installer l'application
 - cloner le repo
 - importer les tables dans la base de donnée à l'aide de resources/receiptmanagement.sql
-- créer un fichier dans le projet *php/config.php*
+- créer un fichier dans le projet *php/configDB.php*
 
 ```PHP
     <?php
-    // FICHIER gitignore dans .git/info/exclude
-    // Informations d'identification
-    define('DB_SERVER', 'localhost');
-    define('DB_USERNAME', 'USER');
-    define('DB_PASSWORD', 'PASSWORD');
+    define('DB_HOST', 'localhost');
     define('DB_NAME', 'receiptmanagement');
-
-    // Connexion à la base de données MySQL 
-    $conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-
-    // Vérifier la connexion
-    if($conn === false){
-        die("ERREUR : Impossible de se connecter. " . mysqli_connect_error());
-    }
-    ?>
+    define('DB_CHARSET', 'utf8');
+    define('DB_USER', 'username');
+    define('DB_PASSWORD', 'password');
 ```
 
 - lors de la première connexion il on vous demande de créer le compte "admin"
