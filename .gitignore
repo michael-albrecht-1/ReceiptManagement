@@ -1,4 +1,4 @@
 pictures/*.jpg
 pictures/*.jpeg
 pictures/*.png
-php/configDB.php
+php/inc/configDB.php

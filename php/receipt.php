@@ -33,7 +33,7 @@
 
     // if saveReceipt worked  and button check and next was clicked we go to the next receipt to check
     if ($result && isset($_POST['checkReceiptAndSelectNext'])) {
-        $nextReceiptToCheck = $this->getFirstReceiptToCheck();
+        $nextReceiptToCheck = $db->getFirstReceiptToCheck();
         $receiptCategories = ["restaurant", "gasoil", "hôtel", "péage", "autre"];  
         $nextReceiptToCheckLink = getLinkWithParamsFromRow($nextReceiptToCheck, $receiptCategories);
         if ($nextReceiptToCheck != null) {
