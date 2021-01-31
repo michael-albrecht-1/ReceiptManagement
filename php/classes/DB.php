@@ -50,18 +50,25 @@ class DB {
             $isChecked = 1;
         }
 
-        if ($_POST['receiptid'] == "") { 
+        if ($_POST['receiptid'] == "") { // new receipt
             $sth = $this->pdo->prepare('INSERT INTO `receipts`(`photo_name`, `photo_data`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES (:photo_name, :photo_data, :date, :receiptCategory, :provider, :amountTTC, :tva, :isChecked, :description)');
+            
+            $photoData = file_get_contents($_FILES['photo']['tmp_name']);
+            $sth->bindParam(':photo_name',  $_FILES["photo"]["name"], PDO::PARAM_STR);
+            $sth->bindParam(':photo_data', $photoData);
 
-        }else { 
-            $sth = $this->pdo->prepare('UPDATE `receipts` SET `photo_name`=:photo_name, `photo_data`=:photo_data, `date_emission`=:date, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
-            $sth->bindParam(':id', $_POST['receiptid'], PDO::PARAM_STR);          
+        }else {  // update receipt
+            if ( ($_FILES['photo']['tmp_name'] != '') && ($_FILES['photo']['tmp_name'] != '') ){ // if new photo 
+                $sth = $this->pdo->prepare('UPDATE `receipts` SET `photo_name`=:photo_name, `photo_data`=:photo_data, `date_emission`=:date, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
+                $photoData = file_get_contents($_FILES['photo']['tmp_name']);
+                $sth->bindParam(':photo_name',  $_FILES["photo"]["name"], PDO::PARAM_STR);
+                $sth->bindParam(':photo_data', $photoData);   
+            } else { // no new photo
+                $sth = $this->pdo->prepare('UPDATE `receipts` SET `date_emission`=:date, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
+            }
+            $sth->bindParam(':id', $_POST['receiptid'], PDO::PARAM_STR);  
         }
 
-        // WIP when update receipt but photo not changed : photo actually deleted
-        $photoData = file_get_contents($_FILES['photo']['tmp_name']);
-        $sth->bindParam(':photo_name',  $_FILES["photo"]["name"], PDO::PARAM_STR);
-        $sth->bindParam(':photo_data', $photoData);
 
         $sth->bindParam(':date', $_POST['date'], PDO::PARAM_STR);
         $sth->bindParam(':receiptCategory', $_POST['receiptCategory'], PDO::PARAM_STR);
@@ -71,6 +78,7 @@ class DB {
         $sth->bindParam(':isChecked', $isChecked, PDO::PARAM_STR);
         $sth->bindParam(':description', $_POST['description'], PDO::PARAM_STR);
         $result = $sth->execute();
+
 
     } catch (Exception $ex) {
         $this->msg = sendMessage($ex->getMessage(), 'danger');
