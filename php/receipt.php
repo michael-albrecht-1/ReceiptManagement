@@ -17,7 +17,7 @@
     }
 
     if (isset($_GET['photo'])){
-        $preloadSrc = $db->getImgSrc($_GET['photo']);
+        $preloadSrc = $receiptService->getImgSrc($_GET['photo']);
     }
     // ============================================================================
     // receipt update end==========================================================
@@ -29,20 +29,20 @@
     // ============================================================================
 
     if (isset($_POST['upload']) || isset($_POST['checkReceiptAndSelectNext'])) {
-        $result = $db->saveReceipt();
+        $result = $receiptService->saveReceipt();
 
-    // if saveReceipt worked  and button check and next was clicked we go to the next receipt to check
-    if ($result && isset($_POST['checkReceiptAndSelectNext'])) {
-        $nextReceiptToCheck = $db->getFirstReceiptToCheck();
-        $receiptCategories = ["restaurant", "gasoil", "hôtel", "péage", "autre"];  
-        $nextReceiptToCheckLink = getLinkWithParamsFromRow($nextReceiptToCheck, $receiptCategories);
-        if ($nextReceiptToCheck != null) {
-        header("Location: $nextReceiptToCheckLink");
-        $msg = sendMessage("Ticket pointé ! ", "success");
-        } else {
-        $msg = sendMessage("Tous les tickets ont été pointés ! ", "success");
+        // if saveReceipt worked  and button check and next was clicked we go to the next receipt to check
+        if ($result && isset($_POST['checkReceiptAndSelectNext'])) {
+            $nextReceiptToCheck = $receiptService->getFirstReceiptToCheck();
+            $receiptCategories = ["restaurant", "gasoil", "hôtel", "péage", "autre"];  
+            $nextReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($nextReceiptToCheck, $receiptCategories);
+            if ($nextReceiptToCheck != null) {
+            header("Location: $nextReceiptToCheckLink");
+            $msg = sendMessage("Ticket pointé ! ", "success");
+            } else {
+            $msg = sendMessage("Tous les tickets ont été pointés ! ", "success");
+            }
         }
-    }
     }
     // ============================================================================
     // saveReceipt end=============================================================
@@ -163,11 +163,9 @@
       <button type="submit" name="upload" class="btn btn-primary mr-2">Valider</button>
       <?php
       if (isset($_GET['id'])){
-        $currentId = $_GET['id'];
-        $sql = "SELECT * FROM receipts WHERE id=$currentId";
-        $result = $db->queryFetch($sql);
+        $res = $receiptService->selectReceiptFromId($_GET['id']);
         
-        if ($result['checked'] == 0) {
+        if ($res['checked'] == 0) {
           echo '<button type="submit" name ="checkReceiptAndSelectNext" class="btn btn-info">Pointer et suivant</button>';
         }
       }

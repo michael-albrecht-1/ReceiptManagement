@@ -46,21 +46,3 @@ function formatTva ($rowTva) {
   }
 }
 
-function getLinkWithParamsFromRow($row, $receiptCategories) {
-  $category = formatCategory($row['category'], $receiptCategories);
-  $tva = formatTva($row['tva']);
-  $row['checked'] ? $isChecked = "oui" : $isChecked = "non";
-  $provider = urlencode($row['provider'] );
-  $description = urlencode($row['description']);
-
-  return 'index.php' .
-              '?id=' . $row['id'] .
-              '&photo=' . $row['photo_name'] .
-              '&date=' . $row['date_emission'] .
-              '&receiptCategory=' . $category .
-              '&provider=' . $provider .
-              '&tva=' . $tva .
-              '&amount=' . $row['montant_ttc'] .
-              '&isChecked=' . $isChecked .
-              '&description=' . $description;
-}

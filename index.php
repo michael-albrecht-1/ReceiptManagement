@@ -1,12 +1,14 @@
 <?php
     require __DIR__ . '/php/inc/header.tpl.php';
     require __DIR__ . '/php/inc/functions.php';
-    require __DIR__ . '/php/classes/DB.php';
+    require __DIR__ . '/php/classes/DBService.php';
+    require __DIR__ . '/php/classes/AuthService.php';
+    require __DIR__ . '/php/classes/ReceiptService.php';
     require __DIR__ . '/php/inc/data.php';
     
-    $db = new DB();
+    $authService = new AuthService();
+    $receiptService = new ReceiptService();
     
-    // check if user is logged
     if (!isset($_SESSION['username'])) {
         require __DIR__ . '/php/login.php';
     } else {

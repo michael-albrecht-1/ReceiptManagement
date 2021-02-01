@@ -2,7 +2,7 @@
 
 
 // 
-$isFirstConnecion = $db->isFirstConnection();
+$isFirstConnecion = $authService->isFirstConnection();
   
   
 if ($isFirstConnecion) {
@@ -13,20 +13,22 @@ if ($isFirstConnecion) {
         $username = trim($_POST['username']);
         $password = trim($_POST['password']);
         if ($username != '' && $password != '') {
-            $isLogginsCorrects = $db->checkLogins($username, $password);
+            $isLogginsCorrects = $authService->checkLogins($username, $password);
             if($isLogginsCorrects){
                 $_SESSION['username'] = $username;
                 header("Location: index.php");
-            }
+            } 
         } else {
         $message = "Le nom d'utilisateur et le mot de passe doivent être renseignés";
         } 
     }
-  
-  echo $db->msg ?? "";
   ?>
+   <h1 class="box-title mt-4">Connexion</h1>
+
+<div class="row">
+    <?= $authService->msg ?? ""; ?>
+</div>
   <form class="box" action="" method="post" name="login">
-      <h1 class="box-title">Connexion</h1>
       <div class="form-group">
           <input type="text" class="form-control" name="username" placeholder="Nom d'utilisateur">
       </div>

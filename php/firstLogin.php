@@ -5,7 +5,7 @@ if (isset($_POST['adminusername'], $_POST['adminemail'], $_POST['adminpassword']
     $username = trim($_POST['adminusername']);
     $email = trim($_POST['adminemail']);
     $password = trim($_POST['adminpassword']);
-    $db->registerUser($username, $email, $password);
+    $authService->registerUser($username, $email, $password);
 } else 
 {
 

@@ -12,7 +12,7 @@
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
-    $res = $db->registerUser($username, $email, $password);
+    $res = $authService->registerUser($username, $email, $password);
     }else{
 
 

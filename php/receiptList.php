@@ -27,9 +27,9 @@
         <button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button>
 
         <?php // link to the olded receipt not checked
-            $firstReceiptToCheck = $db->getFirstReceiptToCheck();
+            $firstReceiptToCheck = $receiptService->getFirstReceiptToCheck();
             if ($firstReceiptToCheck != null) {
-                $firstReceiptToCheckLink = getLinkWithParamsFromRow($firstReceiptToCheck, $receiptCategories);
+                $firstReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($firstReceiptToCheck, $receiptCategories);
                 echo '<a href="' . $firstReceiptToCheckLink . '"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>';
             }
 
@@ -68,41 +68,17 @@
     // ----------------------------
 
 
-    // ---- checked filter -> set a cookie  
-    if (isset($_GET['isChecked']) ) 
-    {
-        $isChecked = $_GET['isChecked'];
-        if ( $isChecked == "isChecked-yes") {
-            $checkedSQL = "checked=true";
-        } elseif ( $isChecked == "isChecked-no") {
-            $checkedSQL = "checked=false";
-        } 
-        else {
-            $checkedSQL = "checked=true OR checked=false";
-        }
-        setcookie("isChecked", $checkedSQL,  time() + 2592000);
-        setcookie("isCheckedJS", $_GET['isChecked'],  time() + 2592000);
-        $where = 'WHERE ' . $checkedSQL;
-        $sql = "SELECT * FROM `receipts` $where ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
-    } elseif ( isset($_COOKIE['isChecked']) ){
-        $where = 'WHERE ' . $_COOKIE["isChecked"];
-        $sql = "SELECT * FROM `receipts` $where ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
-    } else {
-        $sql = "SELECT * FROM `receipts` ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
-    }
-    $receipts = $db->queryFetchAll($sql);
-    // ---------------------------
+    $receipts =  $receiptService->getFilteredReceiptList($total_records_per_page, $offset); 
     
     // pagination -------------------------------------------------
-    if (isset($where)){
-        $paginateCountReq = "SELECT COUNT(*) As total_records FROM `receipts` $where";
-    } else {
-        $paginateCountReq = "SELECT COUNT(*) As total_records FROM `receipts`";
-    }
 
-    $total_records = $db->queryFetch($paginateCountReq);
-    $total_records = $total_records['total_records'];
-    $total_no_of_pages = ceil($total_records / $total_records_per_page);
+
+
+    $totalReceiptsNumber = $receiptService->getTotalReceiptsNumber();
+
+    
+    $totalReceiptsNumber = $totalReceiptsNumber['total_records'];
+    $total_no_of_pages = ceil($totalReceiptsNumber / $total_records_per_page);
     $second_last = $total_no_of_pages - 1; // total pages minus 1
     //----------------------------------------------------------------
 
@@ -120,7 +96,7 @@
         $tva = formatTva($receipt['tva']);
 
         // generate update receipt link
-        $updateReceiptLink = getLinkWithParamsFromRow($receipt, $receiptCategories);
+        $updateReceiptLink = $receiptService->getLinkWithParamsFromRow($receipt, $receiptCategories);
 
         // ===================
         // format values end =
