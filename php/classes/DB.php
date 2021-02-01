@@ -42,10 +42,18 @@ class DB {
         $res =  $sth->execute();
 
         if($res){
-            echo "<div class='sucess'>
-                    <h3>Le compte a été créé avec succès.</h3>
-                    <p>Cliquez ici pour vous <a href='index.php'>connecter</a></p>
-            </div>";
+            if ($username === 'admin'){
+                echo "<div class='sucess'>
+                <h3>Le compte a été créé avec succès.</h3>
+                <p>Cliquez ici pour vous <a href='index.php'>connecter</a></p>
+                </div>";
+            } else {
+                echo "<div class='sucess'>
+                <h3>Le compte a été créé avec succès.</h3>
+                <p>Cliquez <a href='index.php'>ici</a> pour vous retourner à l'accueil</p>
+                </div>";
+            }
+            
         } else {
             $this->msg = sendMessage("Ca n'a pas fonctionné ! ");
         }
