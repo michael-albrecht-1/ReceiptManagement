@@ -56,9 +56,8 @@
     echo "<h1>Ajout d'un ticket</h1>"; 
   }  
 
+  echo $db->msg ?? "";
 ?>
-
-<?= $db->msg ?? "" ?>
 
 <form method="post" action="index.php" name="receipt" enctype="multipart/form-data">
     <input id="receiptid" name="receiptid" type="hidden" value="<?= $_GET['id'] ?? "" ?>">

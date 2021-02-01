@@ -14,7 +14,7 @@ function truncate($string,$length=350,$append="&hellip;") {
   }
   
 // affichage de bloc de message de type alert
-function sendMessage($message, $type) {
+function sendMessage($message, $type = "") {
   if ($type === "success") {
     return "<div class=\"col-lg-4 alert alert-success alert-dismissible text-center\"><button type=\"button\" class=\"close\" data-bs-dismiss=\"alert\">&times;</button>" . $message . "</div>";
   } else {

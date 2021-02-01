@@ -32,7 +32,7 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 ## Installer l'application
 - cloner le repo
 - importer les tables dans la base de donnée à l'aide de resources/receiptmanagement.sql
-- créer un fichier dans le projet *php/configDB.php*
+- créer un fichier dans le projet *php/inc/configDB.php*
 
 ```PHP
     <?php
