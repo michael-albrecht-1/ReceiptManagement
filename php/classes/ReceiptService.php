@@ -39,42 +39,46 @@ class ReceiptService {
         return $this->db->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
     }
 
-    function saveReceipt() {
+    function createReceipt($photo_name, $photo_data, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description) {
         try {
-            $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
-            if (isset($_POST['checkReceiptAndSelectNext'])) {
-                $isChecked = 1;
-            }
-
-            if ($_POST['receiptid'] == "") { // new receipt
-                $sth = $this->db->pdo->prepare('INSERT INTO `receipts`(`photo_name`, `photo_data`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES (:photo_name, :photo_data, :date, :receiptCategory, :provider, :amountTTC, :tva, :isChecked, :description)');
-                
-                $photoData = file_get_contents($_FILES['photo']['tmp_name']);
-                $sth->bindParam(':photo_name',  $_FILES["photo"]["name"], PDO::PARAM_STR);
-                $sth->bindParam(':photo_data', $photoData);
-
-            }else {  // update receipt
-                if ( ($_FILES['photo']['tmp_name'] != '') && ($_FILES['photo']['tmp_name'] != '') ){ // if new photo 
-                    $sth = $this->db->pdo->prepare('UPDATE `receipts` SET `photo_name`=:photo_name, `photo_data`=:photo_data, `date_emission`=:date, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
-                    $photoData = file_get_contents($_FILES['photo']['tmp_name']);
-                    $sth->bindParam(':photo_name',  $_FILES["photo"]["name"], PDO::PARAM_STR);
-                    $sth->bindParam(':photo_data', $photoData);   
-                } else { // no new photo
-                    $sth = $this->db->pdo->prepare('UPDATE `receipts` SET `date_emission`=:date, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
-                }
-                $sth->bindParam(':id', $_POST['receiptid'], PDO::PARAM_STR);  
-            }
-
-
-            $sth->bindParam(':date', $_POST['date'], PDO::PARAM_STR);
-            $sth->bindParam(':receiptCategory', $_POST['receiptCategory'], PDO::PARAM_STR);
-            $sth->bindParam(':provider', $_POST['provider'], PDO::PARAM_STR);
-            $sth->bindParam(':amountTTC', $_POST['amountTTC'], PDO::PARAM_INT);
-            $sth->bindParam(':tva', $_POST['tva'], PDO::PARAM_STR);
+            $sth = $this->db->pdo->prepare('INSERT INTO `receipts`(`photo_name`, `photo_data`, `date_emission`, `category`, `provider`, `amountTTC`, `tva`, `checked`, `description`) VALUES (:photo_name, :photo_data, :date_emission, :receiptCategory, :provider, :amountTTC, :tva, :isChecked, :description)');
+                    
+            $sth->bindParam(':photo_name',  $photo_name, PDO::PARAM_STR);
+            $sth->bindParam(':photo_data', $photoData);
+            $sth->bindParam(':date_emission', $date_emission, PDO::PARAM_STR);
+            $sth->bindParam(':receiptCategory', $category, PDO::PARAM_STR);
+            $sth->bindParam(':provider', $provider, PDO::PARAM_STR);
+            $sth->bindParam(':amountTTC', $amountTTC, PDO::PARAM_INT);
+            $sth->bindParam(':tva', $tva, PDO::PARAM_STR);
             $sth->bindParam(':isChecked', $isChecked, PDO::PARAM_STR);
-            $sth->bindParam(':description', $_POST['description'], PDO::PARAM_STR);
-            $result = $sth->execute();
+            $sth->bindParam(':description', $description, PDO::PARAM_STR);
+            $sth->execute(); 
+        } catch (Exception $ex) {
+            $this->msg = sendMessage($ex->getMessage(), 'danger');
+            return false;
+        }
+        $this->msg= sendMessage("Ticket enregistré ! ", "success");
+        return true;       
+    }
 
+    function updateReceipt($id, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description, $photo_name = null, $photo_data = null) {
+        try {
+            if ( $photo_name != null && $photo_data != null ){
+                $sth = $this->db->pdo->prepare('UPDATE `receipts` SET `photo_name`=:photo_name, `photo_data`=:photo_data, `date_emission`=:date_emission, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
+                $sth->bindParam(':photo_name',  $photo_name, PDO::PARAM_STR);
+                $sth->bindParam(':photo_data', $photoData);
+            } else {
+                $sth = $this->db->pdo->prepare('UPDATE `receipts` SET `date_emission`=:date_emission, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
+            }
+            $sth->bindParam(':id', $id, PDO::PARAM_STR);  
+            $sth->bindParam(':date_emission', $date_emission, PDO::PARAM_STR);
+            $sth->bindParam(':receiptCategory', $category, PDO::PARAM_STR);
+            $sth->bindParam(':provider', $provider, PDO::PARAM_STR);
+            $sth->bindParam(':amountTTC', $amountTTC, PDO::PARAM_INT);
+            $sth->bindParam(':tva', $tva, PDO::PARAM_STR);
+            $sth->bindParam(':isChecked', $isChecked, PDO::PARAM_STR);
+            $sth->bindParam(':description', $description, PDO::PARAM_STR);
+            $sth->execute(); 
 
         } catch (Exception $ex) {
             $this->msg = sendMessage($ex->getMessage(), 'danger');

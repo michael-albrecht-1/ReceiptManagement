@@ -29,7 +29,34 @@
     // ============================================================================
 
     if (isset($_POST['upload']) || isset($_POST['checkReceiptAndSelectNext'])) {
-        $result = $receiptService->saveReceipt();
+        $date_emission = $_POST['date'];
+        $category = $_POST['receiptCategory'];
+        $provider = $_POST['provider'];
+        $amountTTC = $_POST['amountTTC'];
+        $tva = $_POST['tva'];
+        $description = $_POST['description'];
+        $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
+        if (isset($_POST['checkReceiptAndSelectNext'])) {
+            $isChecked = 1;
+        }
+        
+        if ($_POST['receiptid'] == "") {
+            $photo_name = $_FILES["photo"]["name"];
+            $photo_data = file_get_contents($_FILES['photo']['tmp_name']);
+            $result = $receiptService->createReceipt($photo_name, $photo_data, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description);
+        } else 
+        {  // update receipt
+            $id = $_POST['receiptid'];
+            if ( ($_FILES['photo']['tmp_name'] != '') && ($_FILES['photo']['tmp_name'] != '') ){ // if new photo 
+                $photo_name = $_FILES["photo"]["name"];
+                $photo_data = file_get_contents($_FILES['photo']['tmp_name']);
+
+                $result = $receiptService->updateReceipt($id, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description, $photo_name, $photo_data);
+            } else { // no new photo
+                $result = $receiptService->updateReceipt($id, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description);
+            }
+        }
+
 
         // if saveReceipt worked  and button check and next was clicked we go to the next receipt to check
         if ($result && isset($_POST['checkReceiptAndSelectNext'])) {
