@@ -2,33 +2,17 @@
 
 
     // Vérifiez que l'utilisateur est connecté avec le compte "admin", sinon redirigez-le vers la page de connexion
-    if (true) {
-        if ($_SESSION['username'] !== 'admin') {
-            header("Location: php/logout.php");
-        }
+    if ($_SESSION['username'] !== 'admin') {
+        header("Location: index.php");
     }
+    
 
-    if (isset($_REQUEST['username'], $_REQUEST['email'], $_REQUEST['password'])){
+    if (isset($_POST['username'], $_POST['email'], $_POST['password'])){
     // récupérer le nom d'utilisateur et supprimer les antislashes ajoutés par le formulaire
-    $username = stripslashes($_REQUEST['username']);
-    $username = mysqli_real_escape_string($conn, $username); 
-    // récupérer l'email et supprimer les antislashes ajoutés par le formulaire
-    $email = stripslashes($_REQUEST['email']);
-    $email = mysqli_real_escape_string($conn, $email);
-    // récupérer le mot de passe et supprimer les antislashes ajoutés par le formulaire
-    $password = stripslashes($_REQUEST['password']);
-    $password = mysqli_real_escape_string($conn, $password);
-    //requéte SQL + mot de passe crypté
-        $query = "INSERT into `users` (username, email, password)
-                VALUES ('$username', '$email', '".hash('sha256', $password)."')";
-    // Exécuter la requête sur la base de données
-        $res = mysqli_query($conn, $query);
-        if($res){
-        echo "<div class='sucess'>
-                <h3>Le compte a été créé avec succès.</h3>
-                <p>Cliquez ici pour vous <a href='php/login.php'>connecter</a></p>
-        </div>";
-        }
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
+    $res = $authService->registerUser($username, $email, $password);
     }else{
 
 

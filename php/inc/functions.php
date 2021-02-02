@@ -14,7 +14,7 @@ function truncate($string,$length=350,$append="&hellip;") {
   }
   
 // affichage de bloc de message de type alert
-function sendMessage($message, $type) {
+function sendMessage($message, $type = "") {
   if ($type === "success") {
     return "<div class=\"col-lg-4 alert alert-success alert-dismissible text-center\"><button type=\"button\" class=\"close\" data-bs-dismiss=\"alert\">&times;</button>" . $message . "</div>";
   } else {
@@ -22,23 +22,8 @@ function sendMessage($message, $type) {
   }
 }
 
-function getFirstReceiptToCheck($conn) {
-  $req = "SELECT * 
-  FROM receipts
-  WHERE checked=false
- ORDER BY `date_emission` ASC, `id` ASC
- LIMIT 1;";
-    
-    $result = mysqli_query($conn, $req);
-
-    $row = mysqli_fetch_array($result);
-
-    return $row;
-
-}
-
-function formatCategory ($rowCategory, $receiptCategories) {
-  foreach ($receiptCategories as $index => $category) {
+function formatCategory ($rowCategory) {
+  foreach ($GLOBALS['$receiptCategories'] as $index => $category) {
     if ($index == $rowCategory) {
         return $category;
     }
@@ -61,21 +46,3 @@ function formatTva ($rowTva) {
   }
 }
 
-function getLinkWithParamsFromRow($row, $receiptCategories) {
-  $category = formatCategory($row['category'], $receiptCategories);
-  $tva = formatTva($row['tva']);
-  $row['checked'] ? $isChecked = "oui" : $isChecked = "non";
-  $provider = urlencode($row['provider'] );
-  $description = urlencode($row['description']);
-
-  return 'index.php' .
-              '?id=' . $row['id'] .
-              '&photo=' . $row['photo'] .
-              '&date=' . $row['date_emission'] .
-              '&receiptCategory=' . $category .
-              '&provider=' . $provider .
-              '&tva=' . $tva .
-              '&amount=' . $row['montant_ttc'] .
-              '&isChecked=' . $isChecked .
-              '&description=' . $description;
-}

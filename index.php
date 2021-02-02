@@ -1,37 +1,25 @@
 <?php
     require __DIR__ . '/php/inc/header.tpl.php';
     require __DIR__ . '/php/inc/functions.php';
-    require __DIR__ . '/php/config.php';
+    require __DIR__ . '/php/classes/DBService.php';
+    require __DIR__ . '/php/classes/AuthService.php';
+    require __DIR__ . '/php/classes/ReceiptService.php';
     require __DIR__ . '/php/inc/data.php';
     
-    // Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
+    $authService = new AuthService();
+    $receiptService = new ReceiptService();
+
+    $GLOBALS['$receiptCategories']  = ["restaurant", "gasoil", "hôtel", "péage", "autre"]; 
+    
     if (!isset($_SESSION['username'])) {
-        header("Location: php/login.php");
-    }
-
-
-    if (isset($_GET['page'])) {
-        switch ($_GET['page']) {
-            case 1:
-                require __DIR__ . '/php/receipt.php';
-                break;
-            case 2:
-                require __DIR__ . '/php/receiptList.php';
-                break;
-            case 3:
-                require __DIR__ . '/php/logout.php';
-                break;
-            case 4:
-                require __DIR__ . '/php/register.php';
-                break;
-            
-            default:
-                require __DIR__ . '/php/receipt.php';
-                break;
-        }
+        require __DIR__ . '/php/login.php';
     } else {
-        require __DIR__ . '/php/receipt.php';
-    }
+        $page = filter_input(INPUT_GET, 'page');
 
+        if ( $page === null) {
+            $page = 'receipt';
+        }
+        require __DIR__ . '/php/' . $page . '.php';
+    }
     
     require __DIR__ . '/php/inc/footer.tpl.php';

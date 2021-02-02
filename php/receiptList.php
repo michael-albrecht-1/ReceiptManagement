@@ -1,10 +1,8 @@
-
-
 <h1>Liste des tickets</h1>
 
 <form method="get" action="" id="filter-form">
     <div class="row"> 
-        <input id="page" name="page" type="hidden" value="2">
+        <input id="page" name="page" type="hidden" value="receiptList">
         <div>  
             <legend>Pointé</legend>
             <div class="form-check">
@@ -29,9 +27,9 @@
         <button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button>
 
         <?php // link to the olded receipt not checked
-            $firstReceiptToCheck = getFirstReceiptToCheck($conn);
+            $firstReceiptToCheck = $receiptService->getFirstReceiptToCheck();
             if ($firstReceiptToCheck != null) {
-                $firstReceiptToCheckLink = getLinkWithParamsFromRow($firstReceiptToCheck, $receiptCategories);
+                $firstReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($firstReceiptToCheck);
                 echo '<a href="' . $firstReceiptToCheckLink . '"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>';
             }
 
@@ -70,98 +68,69 @@
     // ----------------------------
 
 
-    // ---- checked filter -> set a cookie  
-    if (isset($_GET['isChecked']) ) 
-    {
-        $isChecked = $_GET['isChecked'];
-        if ( $isChecked == "isChecked-yes") {
-            $checkedSQL = "checked=true";
-        } elseif ( $isChecked == "isChecked-no") {
-            $checkedSQL = "checked=false";
-        } 
-        else {
-            $checkedSQL = "checked=true OR checked=false";
-        }
-        setcookie("isChecked", $checkedSQL,  time() + 2592000);
-        setcookie("isCheckedJS", $_GET['isChecked'],  time() + 2592000);
-        $where = 'WHERE ' . $checkedSQL;
-        $req = "SELECT * FROM `receipts` $where ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
-    } elseif ( isset($_COOKIE['isChecked']) ){
-        $where = 'WHERE ' . $_COOKIE["isChecked"];
-        $req = "SELECT * FROM `receipts` $where ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
-    } else {
-        $req = "SELECT * FROM `receipts` ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
-    }
-    $result = mysqli_query($conn, $req);
-    // ---------------------------
+    $receipts =  $receiptService->getFilteredReceiptList($total_records_per_page, $offset); 
     
     // pagination -------------------------------------------------
-    if (isset($where)){
-        $paginateCountReq = "SELECT COUNT(*) As total_records FROM `receipts` $where";
-    } else {
-        $paginateCountReq = "SELECT COUNT(*) As total_records FROM `receipts`";
-    }
 
-    $result_count = mysqli_query($conn, $paginateCountReq);
-    $total_records = mysqli_fetch_array($result_count);
-    $total_records = $total_records['total_records'];
-    $total_no_of_pages = ceil($total_records / $total_records_per_page);
+
+
+    $totalReceiptsNumber = $receiptService->getTotalReceiptsNumber();
+
+    
+    $totalReceiptsNumber = $totalReceiptsNumber['total_records'];
+    $total_no_of_pages = ceil($totalReceiptsNumber / $total_records_per_page);
     $second_last = $total_no_of_pages - 1; // total pages minus 1
     //----------------------------------------------------------------
 
 
-    while ($row = mysqli_fetch_array($result)) { 
+    foreach ($receipts as $receipt) { 
 
-        // format values
+        // ================
+        // format values ==
+        // ================
         $fmt = new NumberFormatter( 'de_DE', NumberFormatter::CURRENCY );
-        $amount = $fmt->formatCurrency($row['montant_ttc'], "EUR");
-        $row['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
-        $description = truncate($row['description'], 40);
-        $receiptCategory = formatCategory($row['category'], $receiptCategories);
-        $tva = formatTva($row['tva']);
+        $amount = $fmt->formatCurrency($receipt['montant_ttc'], "EUR");
+        $receipt['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
+        $description = truncate($receipt['description'], 40);
+        $receiptCategory = formatCategory($receipt['category']);
+        $tva = formatTva($receipt['tva']);
 
         // generate update receipt link
-        $updateReceiptLink = getLinkWithParamsFromRow($row, $receiptCategories);
+        $updateReceiptLink = $receiptService->getLinkWithParamsFromRow($receipt);
 
-        
-        // format values end
-     
+        // ===================
+        // format values end =
+        // ===================     
 
         echo "<tr>";
-            echo "<td>" . $row['date_emission'] . "</td>";
+            echo "<td>" . $receipt['date_emission'] . "</td>";
             echo "<td>" . $receiptCategory . "</td>";
-            echo "<td>" . $row['provider'] . "</td>";
+            echo "<td>" . $receipt['provider'] . "</td>";
             echo "<td>" . $tva . "</td>";
             echo "<td>" . $amount . "</td>";
             echo "<td>" . $isChecked . "</td>";
-            echo "<td>" . $row['description'] . "</td>";
-            echo "<td>
-                <a class='update-receipt' href=" . $updateReceiptLink . ">&#9998;</a>
-            </td>";
-            
+            echo "<td>" . $receipt['description'] . "</td>";
+            echo "<td><a class='update-receipt' href=" . $updateReceiptLink . ">&#9998;</a></td>";
         echo "</tr>";
-
-        
     }
-    mysqli_close($conn);
-
-
 ?> 
-
 </table>
 
+<!-- ======================== -->
+<!-- pagination ============= -->
+<!-- ======================== -->
 <div class="row">
     <div>
         <nav aria-label="Receipts navigation">
             <ul class="pagination">
                 <?php if($page_no > 1){
-                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page=2&page_no=1'>First Page</a></li>";
+                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page=receiptList&page_no=1'>First Page</a></li>";
                 } ?>
 
 
                 <li <?php if($page_no <= 1){ echo "class='page-item disabled'"; } else { echo "class='page-item'"; } ?>>
                 <a class="page-link" <?php if($page_no > 1){
-                echo "href='?page=2&page_no=$previous_page'";
+                echo "href='?page=receiptList&page_no=$previous_page'";
                 } ?>>Previous</a>
                 </li>
                     
@@ -173,14 +142,14 @@
                 } 
                 ?>>
                 <a class="page-link" <?php if($page_no < $total_no_of_pages) {
-                            echo "href='?page=2&page_no=$next_page'";
+                            echo "href='?page=receiptList&page_no=$next_page'";
                     } ?>
                 >Next</a>
                 </li>
 
                 
                 <?php if($page_no < $total_no_of_pages){
-                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page=2&page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
+                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page=receiptList&page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
                 } ?>
             </ul>
             <div>

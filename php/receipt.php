@@ -1,79 +1,76 @@
 <?php
 
-    // en modif d'un ticket, on récupère le nom de la photo
-    if ( isset($_GET['photo']) ) {
-      $srcPhoto = "pictures/".basename($_GET['photo']);
+    // ============================================================================
+    // receipt update =============================================================
+    // ============================================================================
+    if (isset($_GET['isChecked'])) {
+        if ($_GET['isChecked'] == "oui") {
+            $isCheckedYes = "checked";
+            $isCheckedNo = "";
+        } else {
+            $isCheckedYes = "";
+            $isCheckedNo = "checked";
+        }
+    } else {
+    $isCheckedYes = "";
+    $isCheckedNo = "checked";
     }
 
-    // en modif d'un ticket récupérer si c'est pointé ou pas
-       if (isset($_GET['isChecked'])) {
-        if ($_GET['isChecked'] == "oui") {
-          $isCheckedYes = "checked";
-          $isCheckedNo = "";
-        } else {
-          $isCheckedYes = "";
-          $isCheckedNo = "checked";
-        }
-       } else {
-        $isCheckedYes = "";
-        $isCheckedNo = "checked";
-       }
+    if (isset($_GET['photo'])){
+        $preloadSrc = $receiptService->getImgSrc($_GET['photo']);
+    }
+    // ============================================================================
+    // receipt update end==========================================================
+    // ============================================================================
 
 
-    // traitement de l'envoi du formulaire
+    // ============================================================================
+    // saveReceipt ================================================================
+    // ============================================================================
     if (isset($_POST['upload']) || isset($_POST['checkReceiptAndSelectNext'])) {
-        if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
-          // On récupère le nom de l'image
-          $picture = $_FILES['photo']['name'];
-          // répertoire de stockage des images
-          $target = "pictures/".basename($picture);
-        } else  {
-          $picture = $_POST['uploadSrc'];
-        }
-        $date = $_POST['date'];
-        $receiptCategory =  $_POST['receiptCategory'];
-        $provider = mysqli_real_escape_string($conn, $_POST['provider']);
-        $amountTTC = $_POST['amountTTC'];
-        $tva = $_POST['tva'];
-        $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
+        $date_emission = filter_input(INPUT_POST, 'date');
+        $category = filter_input(INPUT_POST, 'receiptCategory');
+        $provider = filter_input(INPUT_POST, 'provider');
+        $amountTTC = filter_input(INPUT_POST, 'amountTTC');
+        $tva = filter_input(INPUT_POST, 'tva');
+        $description = filter_input(INPUT_POST, 'description');
+        filter_input(INPUT_POST, 'ischecked') === "true" ? $isChecked = 1 : $isChecked = 0;
         if (isset($_POST['checkReceiptAndSelectNext'])) {
-          $isChecked = 1;
-        }
-        $description = mysqli_real_escape_string($conn, $_POST['description']);
-        if ($_POST['receiptid'] == "") { 
-          $query = "INSERT INTO `receipts`(`photo`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES ('$picture','$date','$receiptCategory', '$provider', $amountTTC,'$tva','$isChecked','$description')";
-          $result = mysqli_query($conn,$query);
-        }else { 
-          $id = $_POST['receiptid'];
-          $query = "UPDATE `receipts` SET `photo`='$picture', `date_emission`='$date', `category`='$receiptCategory', `provider`='$provider', `montant_ttc`=$amountTTC, `tva`='$tva', `checked`='$isChecked', `description`='$description' WHERE `receipts`.id = '$id'";
-          $result = mysqli_query($conn,$query);
+            $isChecked = 1;
         }
         
-        // On importe l'image
-        if (isset($_FILES['photo']['name']) && ($_FILES['photo']['name'] != '')) {
-          if (move_uploaded_file($_FILES['photo']['tmp_name'], $target)) {
-            sendMessage("L'import de l'image n'a pas fonctionné !", "danger");
-          }
+        if ($_POST['receiptid'] == "") {
+            $photo_name = $_FILES["photo"]["name"];
+            $photo_data = file_get_contents($_FILES['photo']['tmp_name']);
+            $result = $receiptService->createReceipt($photo_name, $photo_data, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description);
+        } else 
+        {  // update receipt
+            $id = $_POST['receiptid'];
+            if ( ($_FILES['photo']['tmp_name'] != '') && ($_FILES['photo']['tmp_name'] != '') ){ // if new photo 
+                $photo_name = $_FILES["photo"]["name"];
+                $photo_data = file_get_contents($_FILES['photo']['tmp_name']);
+
+                $result = $receiptService->updateReceipt($id, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description, $photo_name, $photo_data);
+            } else { // no new photo
+                $result = $receiptService->updateReceipt($id, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description);
+            }
         }
 
-        if ($result) {
-          $msg = sendMessage("Ticket enregistré ! ", "success");
-        }else{
-          $msg = sendMessage("Ça n'a pas fonctionné ! ", "danger");
+        // if a receipt have been saved correctly and the button check and next was clicked we go to the next receipt to check
+        if ($result && isset($_POST['checkReceiptAndSelectNext'])) {
+            $nextReceiptToCheck = $receiptService->getFirstReceiptToCheck();
+            $nextReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($nextReceiptToCheck);
+            if ($nextReceiptToCheck != null) {
+            header("Location: $nextReceiptToCheckLink");
+            $msg = sendMessage("Ticket pointé ! ", "success");
+            } else {
+            $msg = sendMessage("Tous les tickets ont été pointés ! ", "success");
+            }
         }
-
-      // if button check and next was clicked we go to the next receipt to check
-      if (isset($_POST['checkReceiptAndSelectNext'])) {
-        $nextReceiptToCheck = getFirstReceiptToCheck($conn);
-        $nextReceiptToCheckLink = getLinkWithParamsFromRow($nextReceiptToCheck, $receiptCategories);
-        if ($nextReceiptToCheck != null) {
-          header("Location: $nextReceiptToCheckLink");
-          $msg = sendMessage("Ticket pointé ! ", "success");
-        } else {
-          $msg = sendMessage("Tous les tickets ont été pointés ! ", "success");
-        }
-      }
     }
+    // ============================================================================
+    // saveReceipt end=============================================================
+    // ============================================================================
 ?>
 
 <?php 
@@ -83,12 +80,12 @@
     echo "<h1>Ajout d'un ticket</h1>"; 
   }  
 
+  echo $receiptService->msg ?? "";
 ?>
-
-<?= $msg ?? "" ?>
 
 <form method="post" action="index.php" name="receipt" enctype="multipart/form-data">
     <input id="receiptid" name="receiptid" type="hidden" value="<?= $_GET['id'] ?? "" ?>">
+
     <fieldset>
     <div class="form-group row">
       <label for="photo">Prendre une photo</label>
@@ -96,12 +93,10 @@
     </div>
 
     <div class="form-group row">
-        <img id="preload" src="<?= $srcPhoto ?? "" ?>">
+        <img id="preload" src='<?= $preloadSrc ?? '' ?>'/>
         <input id="uploadSrc" name="uploadSrc" type="hidden" value="<?= $_GET['photo'] ?? "" ?>">
     </div>
     
-  
-
     <div class="form-group row">
       <label for="date">Date</label>
       <input type="date" class="form-control" id="date" name="date"  value="<?= $_GET['date'] ?? date("Y-m-d") ?>" required>
@@ -187,22 +182,19 @@
       <label for="exampleTextarea">Description</label>
       <textarea class="form-control" id="description" name="description" rows="3" maxlength="500"><?= $_GET['description'] ?? "" ?></textarea>
     </div>
-
-    <button type="submit" name="upload" class="btn btn-primary mb-4">Valider</button>
-    <?php
-    if (isset($_GET['id'])){
-      $currentId = $_GET['id'];
-      $req = "SELECT * FROM receipts WHERE id=$currentId";
-      $result = mysqli_query($conn, $req);
-      $row = mysqli_fetch_array($result);
       
-      if ($row['checked'] == 0) {
-        echo '<button type="submit" name ="checkReceiptAndSelectNext" class="btn btn-info">Pointer et suivant</button>';
+    <div class="row mb-4">
+      <button type="submit" name="upload" class="btn btn-primary mr-2">Valider</button>
+      <?php
+      if (isset($_GET['id'])){
+        $res = $receiptService->selectReceiptFromId($_GET['id']);
+        
+        if ($res['checked'] == 0) {
+          echo '<button type="submit" name ="checkReceiptAndSelectNext" class="btn btn-info">Pointer et suivant</button>';
+        }
       }
-    }
-      
       ?>
-    
+    </div>   
 
 </form>
 
