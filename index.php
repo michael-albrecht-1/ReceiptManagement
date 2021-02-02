@@ -12,29 +12,12 @@
     if (!isset($_SESSION['username'])) {
         require __DIR__ . '/php/login.php';
     } else {
-        if (isset($_GET['page'])) {
-            switch ($_GET['page']) {
-                case 1:
-                    require __DIR__ . '/php/receipt.php';
-                    break;
-                case 2:
-                    require __DIR__ . '/php/receiptList.php';
-                    break;
-                case 3:
-                    require __DIR__ . '/php/logout.php';
-                    break;
-                case 4:
-                    require __DIR__ . '/php/register.php';
-                    break;
-                
-                default:
-                    require __DIR__ . '/php/receipt.php';
-                    break;
-            }
-        } else {
-            require __DIR__ . '/php/receipt.php';
-        }
-    }
+        $page = filter_input(INPUT_GET, 'page');
 
+        if ( $page === null) {
+            $page = 'receipt';
+        }
+        require __DIR__ . '/php/' . $page . '.php';
+    }
     
     require __DIR__ . '/php/inc/footer.tpl.php';
