@@ -5,11 +5,11 @@
     // ============================================================================
     if (isset($_GET['isChecked'])) {
         if ($_GET['isChecked'] == "oui") {
-          $isCheckedYes = "checked";
-          $isCheckedNo = "";
+            $isCheckedYes = "checked";
+            $isCheckedNo = "";
         } else {
-          $isCheckedYes = "";
-          $isCheckedNo = "checked";
+            $isCheckedYes = "";
+            $isCheckedNo = "checked";
         }
     } else {
     $isCheckedYes = "";
@@ -27,15 +27,14 @@
     // ============================================================================
     // saveReceipt ================================================================
     // ============================================================================
-
     if (isset($_POST['upload']) || isset($_POST['checkReceiptAndSelectNext'])) {
-        $date_emission = $_POST['date'];
-        $category = $_POST['receiptCategory'];
-        $provider = $_POST['provider'];
-        $amountTTC = $_POST['amountTTC'];
-        $tva = $_POST['tva'];
-        $description = $_POST['description'];
-        $_POST['ischecked'] === "true" ? $isChecked = 1 : $isChecked = 0;
+        $date_emission = filter_input(INPUT_POST, 'date');
+        $category = filter_input(INPUT_POST, 'receiptCategory');
+        $provider = filter_input(INPUT_POST, 'provider');
+        $amountTTC = filter_input(INPUT_POST, 'amountTTC');
+        $tva = filter_input(INPUT_POST, 'tva');
+        $description = filter_input(INPUT_POST, 'description');
+        filter_input(INPUT_POST, 'ischecked') === "true" ? $isChecked = 1 : $isChecked = 0;
         if (isset($_POST['checkReceiptAndSelectNext'])) {
             $isChecked = 1;
         }
@@ -57,12 +56,10 @@
             }
         }
 
-
-        // if saveReceipt worked  and button check and next was clicked we go to the next receipt to check
+        // if a receipt have been saved correctly and the button check and next was clicked we go to the next receipt to check
         if ($result && isset($_POST['checkReceiptAndSelectNext'])) {
             $nextReceiptToCheck = $receiptService->getFirstReceiptToCheck();
-            $receiptCategories = ["restaurant", "gasoil", "hôtel", "péage", "autre"];  
-            $nextReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($nextReceiptToCheck, $receiptCategories);
+            $nextReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($nextReceiptToCheck);
             if ($nextReceiptToCheck != null) {
             header("Location: $nextReceiptToCheckLink");
             $msg = sendMessage("Ticket pointé ! ", "success");
@@ -83,7 +80,7 @@
     echo "<h1>Ajout d'un ticket</h1>"; 
   }  
 
-  echo $db->msg ?? "";
+  echo $receiptService->msg ?? "";
 ?>
 
 <form method="post" action="index.php" name="receipt" enctype="multipart/form-data">
@@ -197,10 +194,7 @@
         }
       }
       ?>
-    </div>
-      
-   
-    
+    </div>   
 
 </form>
 

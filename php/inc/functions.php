@@ -22,8 +22,8 @@ function sendMessage($message, $type = "") {
   }
 }
 
-function formatCategory ($rowCategory, $receiptCategories) {
-  foreach ($receiptCategories as $index => $category) {
+function formatCategory ($rowCategory) {
+  foreach ($GLOBALS['$receiptCategories'] as $index => $category) {
     if ($index == $rowCategory) {
         return $category;
     }

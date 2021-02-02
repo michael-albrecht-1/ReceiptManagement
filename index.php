@@ -8,6 +8,8 @@
     
     $authService = new AuthService();
     $receiptService = new ReceiptService();
+
+    $GLOBALS['$receiptCategories']  = ["restaurant", "gasoil", "hôtel", "péage", "autre"]; 
     
     if (!isset($_SESSION['username'])) {
         require __DIR__ . '/php/login.php';

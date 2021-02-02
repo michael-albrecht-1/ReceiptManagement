@@ -2,7 +2,7 @@
 
 <form method="get" action="" id="filter-form">
     <div class="row"> 
-        <input id="page" name="page" type="hidden" value="2">
+        <input id="page" name="page" type="hidden" value="receiptList">
         <div>  
             <legend>Pointé</legend>
             <div class="form-check">
@@ -29,7 +29,7 @@
         <?php // link to the olded receipt not checked
             $firstReceiptToCheck = $receiptService->getFirstReceiptToCheck();
             if ($firstReceiptToCheck != null) {
-                $firstReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($firstReceiptToCheck, $receiptCategories);
+                $firstReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($firstReceiptToCheck);
                 echo '<a href="' . $firstReceiptToCheckLink . '"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>';
             }
 
@@ -92,11 +92,11 @@
         $amount = $fmt->formatCurrency($receipt['montant_ttc'], "EUR");
         $receipt['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
         $description = truncate($receipt['description'], 40);
-        $receiptCategory = formatCategory($receipt['category'], $receiptCategories);
+        $receiptCategory = formatCategory($receipt['category']);
         $tva = formatTva($receipt['tva']);
 
         // generate update receipt link
-        $updateReceiptLink = $receiptService->getLinkWithParamsFromRow($receipt, $receiptCategories);
+        $updateReceiptLink = $receiptService->getLinkWithParamsFromRow($receipt);
 
         // ===================
         // format values end =
@@ -124,13 +124,13 @@
         <nav aria-label="Receipts navigation">
             <ul class="pagination">
                 <?php if($page_no > 1){
-                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page=2&page_no=1'>First Page</a></li>";
+                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page=receiptList&page_no=1'>First Page</a></li>";
                 } ?>
 
 
                 <li <?php if($page_no <= 1){ echo "class='page-item disabled'"; } else { echo "class='page-item'"; } ?>>
                 <a class="page-link" <?php if($page_no > 1){
-                echo "href='?page=2&page_no=$previous_page'";
+                echo "href='?page=receiptList&page_no=$previous_page'";
                 } ?>>Previous</a>
                 </li>
                     
@@ -142,14 +142,14 @@
                 } 
                 ?>>
                 <a class="page-link" <?php if($page_no < $total_no_of_pages) {
-                            echo "href='?page=2&page_no=$next_page'";
+                            echo "href='?page=receiptList&page_no=$next_page'";
                     } ?>
                 >Next</a>
                 </li>
 
                 
                 <?php if($page_no < $total_no_of_pages){
-                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page=2&page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
+                echo "<li class=\"page-item\"><a class=\"page-link\" href='?page=receiptList&page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
                 } ?>
             </ul>
             <div>
