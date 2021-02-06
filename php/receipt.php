@@ -17,12 +17,11 @@
     }
 
     if (isset($_GET['photo'])){
-        $preloadSrc = $receiptService->getImgSrc($_GET['photo']);
+        $preloadSrc = 'pictures/' . $_GET['photo'];
     }
     // ============================================================================
     // receipt update end==========================================================
     // ============================================================================
-
 
     // ============================================================================
     // saveReceipt ================================================================
@@ -35,36 +34,48 @@
         $tva = filter_input(INPUT_POST, 'tva');
         $description = filter_input(INPUT_POST, 'description');
         filter_input(INPUT_POST, 'ischecked') === "true" ? $isChecked = 1 : $isChecked = 0;
+        $photo_name = $_FILES["photo"]["name"];
+        $photo_data = $_FILES['photo']['tmp_name'];
+        $isPhotoSaved = false;
+        $isReceiptSaved = false;
         if (isset($_POST['checkReceiptAndSelectNext'])) {
             $isChecked = 1;
         }
-        
-        if ($_POST['receiptid'] == "") {
-            $photo_name = $_FILES["photo"]["name"];
-            $photo_data = file_get_contents($_FILES['photo']['tmp_name']);
-            $result = $receiptService->createReceipt($photo_name, $photo_data, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description);
-        } else 
-        {  // update receipt
-            $id = $_POST['receiptid'];
-            if ( ($_FILES['photo']['tmp_name'] != '') && ($_FILES['photo']['tmp_name'] != '') ){ // if new photo 
-                $photo_name = $_FILES["photo"]["name"];
-                $photo_data = file_get_contents($_FILES['photo']['tmp_name']);
 
-                $result = $receiptService->updateReceipt($id, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description, $photo_name, $photo_data);
-            } else { // no new photo
-                $result = $receiptService->updateReceipt($id, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description);
-            }
+        if ( ($photo_name != null) && ($photo_data != null) ){
+            $isPhotoSaved = $receiptService->uploadImg($photo_name, $photo_data);
+        } else {
+          $photo_name = $preloadSrc;
         }
 
+        if ($isPhotoSaved != false ){
+            if ($_POST['receiptid'] == "") { // create receipt
+                $isReceiptSaved = $receiptService->createReceipt($photo_name, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description);
+            } else // update receipt
+            {  
+                $isReceiptSaved = $receiptService->updateReceipt($id, $photo_name, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description);
+            }
+        }
+ 
+        // errors 
+        if (!$isPhotoSaved) {
+            $msg = sendMessage("erreur d'enregistrement de la photo.", 'danger');
+        } else {
+            if ($isReceiptSaved){
+                $msg = sendMessage("Le ticket est sauvegardé ! ");
+            }
+        }
+    
+
         // if a receipt have been saved correctly and the button check and next was clicked we go to the next receipt to check
-        if ($result && isset($_POST['checkReceiptAndSelectNext'])) {
+        if ($isReceiptSaved && isset($_POST['checkReceiptAndSelectNext'])) {
             $nextReceiptToCheck = $receiptService->getFirstReceiptToCheck();
             $nextReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($nextReceiptToCheck);
             if ($nextReceiptToCheck != null) {
             header("Location: $nextReceiptToCheckLink");
-            $msg = sendMessage("Ticket pointé ! ", "success");
+            $msg = sendMessage("Ticket pointé !");
             } else {
-            $msg = sendMessage("Tous les tickets ont été pointés ! ", "success");
+            $msg = sendMessage("Tous les tickets ont été pointés !");
             }
         }
     }
@@ -81,6 +92,7 @@
   }  
 
   echo $receiptService->msg ?? "";
+  echo $msg ?? "";
 ?>
 
 <form method="post" action="index.php" name="receipt" enctype="multipart/form-data">

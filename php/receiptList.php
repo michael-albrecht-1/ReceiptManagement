@@ -1,9 +1,9 @@
 <h1>Liste des tickets</h1>
 
-<form method="get" action="" id="filter-form">
-    <div class="row"> 
+<form method="get" action="" id="filter-form" class="my-5">
+    <div class="form-row flex-wrap">
         <input id="page" name="page" type="hidden" value="receiptList">
-        <div>  
+        <div class="col-4 col-md-3 pb-4">  
             <legend>Pointé</legend>
             <div class="form-check">
                 <label class="form-check-label">
@@ -24,17 +24,19 @@
                 </label>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button>
+    </div>
+    <div class="form-row">      
+        <div class="col-4 col-md-3 col-lg-2"><button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button></div>
+        <div class="col-4 col-md-3 col-lg-2">
+            <?php // link to the olded receipt not checked
+                $firstReceiptToCheck = $receiptService->getFirstReceiptToCheck();
+                if ($firstReceiptToCheck != null) {
+                    $firstReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($firstReceiptToCheck);
+                    echo '<a href="' . $firstReceiptToCheckLink . '"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>';
+                }
 
-        <?php // link to the olded receipt not checked
-            $firstReceiptToCheck = $receiptService->getFirstReceiptToCheck();
-            if ($firstReceiptToCheck != null) {
-                $firstReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($firstReceiptToCheck);
-                echo '<a href="' . $firstReceiptToCheckLink . '"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>';
-            }
-
-        ?>
-        
+            ?>
+        </div>
     </div>
 </form>
 

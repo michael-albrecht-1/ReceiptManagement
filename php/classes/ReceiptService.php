@@ -39,12 +39,11 @@ class ReceiptService {
         return $this->db->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
     }
 
-    function createReceipt($photo_name, $photo_data, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description) {
+    function createReceipt($photo_name, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description) {
         try {
-            $sth = $this->db->pdo->prepare('INSERT INTO `receipts`(`photo_name`, `photo_data`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES (:photo_name, :photo_data, :date_emission, :receiptCategory, :provider, :amountTTC, :tva, :isChecked, :description)');
+            $sth = $this->db->pdo->prepare('INSERT INTO `receipts`(`photo_name`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES (:photo_name, :date_emission, :receiptCategory, :provider, :amountTTC, :tva, :isChecked, :description)');
                     
             $sth->bindParam(':photo_name',  $photo_name, PDO::PARAM_STR);
-            $sth->bindParam(':photo_data', $photo_data);
             $sth->bindParam(':date_emission', $date_emission, PDO::PARAM_STR);
             $sth->bindParam(':receiptCategory', $category, PDO::PARAM_STR);
             $sth->bindParam(':provider', $provider, PDO::PARAM_STR);
@@ -57,20 +56,15 @@ class ReceiptService {
             $this->msg = sendMessage($ex->getMessage(), 'danger');
             return false;
         }
-        $this->msg= sendMessage("Ticket enregistré ! ", "success");
         return true;       
     }
 
-    function updateReceipt($id, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description, $photo_name = null, $photo_data = null) {
+    function updateReceipt($id, $photo_name, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description) {
         try {
-            if ( $photo_name != null && $photo_data != null ){
-                $sth = $this->db->pdo->prepare('UPDATE `receipts` SET `photo_name`=:photo_name, `photo_data`=:photo_data, `date_emission`=:date_emission, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
-                $sth->bindParam(':photo_name',  $photo_name, PDO::PARAM_STR);
-                $sth->bindParam(':photo_data', $photo_data);
-            } else {
-                $sth = $this->db->pdo->prepare('UPDATE `receipts` SET `date_emission`=:date_emission, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
-            }
+            $sth = $this->db->pdo->prepare('UPDATE `receipts` SET `photo_name`=:photo_name, `date_emission`=:date_emission, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
+
             $sth->bindParam(':id', $id, PDO::PARAM_STR);  
+            $sth->bindParam(':photo_name',  $photo_name, PDO::PARAM_STR);
             $sth->bindParam(':date_emission', $date_emission, PDO::PARAM_STR);
             $sth->bindParam(':receiptCategory', $category, PDO::PARAM_STR);
             $sth->bindParam(':provider', $provider, PDO::PARAM_STR);
@@ -84,25 +78,54 @@ class ReceiptService {
             $this->msg = sendMessage($ex->getMessage(), 'danger');
             return false;
         }
-        $this->msg= sendMessage("Ticket enregistré ! ", "success");
         return true;
     }
   
     //  get photo name
-    function getImg ($name) {
-        $stmt = $this->db->pdo->prepare(
-        "SELECT `photo_data` FROM `receipts` WHERE `photo_name`=?"
-        );
-        $stmt->execute([$name]);
-        $img = $stmt->fetch();
-        return $img['photo_data'];
+    function uploadImg( $photo_name, $photo_data)
+    {
+        $uploadedFile = $photo_data; 
+        $sourceProperties = getimagesize($uploadedFile);
+        $dirPath = "pictures/";
+        $ext = pathinfo($photo_name, PATHINFO_EXTENSION);
+        $imageType = $sourceProperties[2];
+
+
+        switch ($imageType) {
+
+
+            case IMAGETYPE_PNG:
+                $imageSrc = imagecreatefrompng($uploadedFile); 
+                $tmp = $this->imageResize($imageSrc,$sourceProperties[0],$sourceProperties[1]);
+                return imagepng($tmp,$dirPath. $photo_name);
+
+            case IMAGETYPE_JPEG:
+                $imageSrc = imagecreatefromjpeg($uploadedFile); 
+                $tmp = $this->imageResize($imageSrc,$sourceProperties[0],$sourceProperties[1]);
+                return imagejpeg($tmp,$dirPath. $photo_name);
+            
+            case IMAGETYPE_GIF:
+                $imageSrc = imagecreatefromgif($uploadedFile); 
+                $tmp = $this->imageResize($imageSrc,$sourceProperties[0],$sourceProperties[1]);
+                return imagegif($tmp,$dirPath. $photo_name);
+
+            default:
+                $this->msg =  "Invalid Image type.";
+                exit;
+                break;
+        }
     }
-  
-    //  generate src for update receipt photo preload
-    function getImgSrc ($name) {
-        $img = base64_encode($this->getImg($name));
-        $ext = pathinfo($name, PATHINFO_EXTENSION);
-        return 'data:image/jpg;base64,' . $img;
+
+    function imageResize($imageSrc,$imageWidth,$imageHeight) {
+
+        $newImageWidth =800;
+        $ratio = $imageWidth / $newImageWidth;
+        $newImageHeight = $imageHeight / $ratio;
+    
+        $newImageLayer=imagecreatetruecolor($newImageWidth,$newImageHeight);
+        imagecopyresampled($newImageLayer,$imageSrc,0,0,0,0,$newImageWidth,$newImageHeight,$imageWidth,$imageHeight);
+    
+        return $newImageLayer;
     }
 
     function getLinkWithParamsFromRow($row) {
