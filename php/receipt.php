@@ -42,24 +42,15 @@
         if (isset($_POST['checkReceiptAndSelectNext'])) {
             $isChecked = 1;
         }
-var_dump($id);
-        var_dump($_FILES);
 
         if ( ($photo_name != null) && ($photo_data != null) ){
             $isPhotoSaved = $receiptService->uploadImg($photo_name, $photo_data);
-            if (!$isPhotoSaved) {
-                $msg = sendMessage("Erreur d'enregistrement de la photo.", 'danger');
-            }
-            echo "enreg photo";
         } else if ($photo_name == '' && $photo_data == '' && $id != '') {
             $photo_name = $_POST['uploadSrc'];
             $isPhotoSaved = true;
-            echo "pas photo ELSE";
           }else {
             $msg = sendMessage("La photo n'a pas pu être téléchargée.", 'danger');
-        }
-
-        
+        } 
 
         if ($isPhotoSaved != false ){
             if ($id == '') { // create receipt
@@ -70,13 +61,11 @@ var_dump($id);
             }
         }
  
-        // errors 
         if ($isPhotoSaved) {
             if ($isReceiptSaved){
                 $msg = sendMessage("Le ticket est sauvegardé ! ");
             }
         }
-    
 
         // if a receipt have been saved correctly and the button check and next was clicked we go to the next receipt to check
         if ($isReceiptSaved && isset($_POST['checkReceiptAndSelectNext'])) {

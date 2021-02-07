@@ -84,48 +84,19 @@ class ReceiptService {
     //  get photo name
     function uploadImg( $photo_name, $photo_data)
     {
-        $uploadedFile = $photo_data; 
-        $sourceProperties = getimagesize($uploadedFile);
-        $dirPath = "pictures/";
-        $ext = pathinfo($photo_name, PATHINFO_EXTENSION);
-        $imageType = $sourceProperties[2];
-
-
-        switch ($imageType) {
-
-
-            case IMAGETYPE_PNG:
-                $imageSrc = imagecreatefrompng($uploadedFile); 
-                $tmp = $this->imageResize($imageSrc,$sourceProperties[0],$sourceProperties[1]);
-                return imagepng($tmp,$dirPath. $photo_name);
-
-            case IMAGETYPE_JPEG:
-                $imageSrc = imagecreatefromjpeg($uploadedFile); 
-                $tmp = $this->imageResize($imageSrc,$sourceProperties[0],$sourceProperties[1]);
-                return imagejpeg($tmp,$dirPath. $photo_name);
-            
-            case IMAGETYPE_GIF:
-                $imageSrc = imagecreatefromgif($uploadedFile); 
-                $tmp = $this->imageResize($imageSrc,$sourceProperties[0],$sourceProperties[1]);
-                return imagegif($tmp,$dirPath. $photo_name);
-
-            default:
-                $this->msg =  "Invalid Image type.";
-                exit;
-                break;
+        $imgInfo = getimagesize($photo_data);
+        $mime = $imgInfo['mime']; 
+        if ($mime == 'image/jpeg' || $mime == 'image/png'){
+            if (move_uploaded_file($photo_data, 'pictures/' . $photo_name)) {
+                return true;
+            } else {
+                return false;
+                $this->msg = sendMessage('La photo ne s\'est pas téléchargée ! Opération abandonée. ', 'danger');
+            }
+        } else {
+            $this->msg = sendMessage('Le format du fichier n\'est pas supporté ! Opération abandonée. ', 'danger');
         }
-    }
 
-    function imageResize($imageSrc,$imageWidth,$imageHeight) {
-
-        $newImageWidth =800;
-        $ratio = $imageWidth / $newImageWidth;
-        $newImageHeight = $imageHeight / $ratio;
-    
-        $newImageLayer=imagecreatetruecolor($newImageWidth,$newImageHeight);
-        imagecopyresampled($newImageLayer,$imageSrc,0,0,0,0,$newImageWidth,$newImageHeight,$imageWidth,$imageHeight);
-    
-        return $newImageLayer;
     }
 
     function getLinkWithParamsFromRow($row) {
