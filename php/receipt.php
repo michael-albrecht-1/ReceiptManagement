@@ -27,6 +27,7 @@
     // saveReceipt ================================================================
     // ============================================================================
     if (isset($_POST['upload']) || isset($_POST['checkReceiptAndSelectNext'])) {
+        $id = filter_input(INPUT_POST, 'receiptid');
         $date_emission = filter_input(INPUT_POST, 'date');
         $category = filter_input(INPUT_POST, 'receiptCategory');
         $provider = filter_input(INPUT_POST, 'provider');
@@ -41,15 +42,27 @@
         if (isset($_POST['checkReceiptAndSelectNext'])) {
             $isChecked = 1;
         }
+var_dump($id);
+        var_dump($_FILES);
 
         if ( ($photo_name != null) && ($photo_data != null) ){
             $isPhotoSaved = $receiptService->uploadImg($photo_name, $photo_data);
-        } else {
-          $photo_name = $preloadSrc;
+            if (!$isPhotoSaved) {
+                $msg = sendMessage("Erreur d'enregistrement de la photo.", 'danger');
+            }
+            echo "enreg photo";
+        } else if ($photo_name == '' && $photo_data == '' && $id != '') {
+            $photo_name = $_POST['uploadSrc'];
+            $isPhotoSaved = true;
+            echo "pas photo ELSE";
+          }else {
+            $msg = sendMessage("La photo n'a pas pu être téléchargée.", 'danger');
         }
 
+        
+
         if ($isPhotoSaved != false ){
-            if ($_POST['receiptid'] == "") { // create receipt
+            if ($id == '') { // create receipt
                 $isReceiptSaved = $receiptService->createReceipt($photo_name, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description);
             } else // update receipt
             {  
@@ -58,9 +71,7 @@
         }
  
         // errors 
-        if (!$isPhotoSaved) {
-            $msg = sendMessage("erreur d'enregistrement de la photo.", 'danger');
-        } else {
+        if ($isPhotoSaved) {
             if ($isReceiptSaved){
                 $msg = sendMessage("Le ticket est sauvegardé ! ");
             }
