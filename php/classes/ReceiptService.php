@@ -47,7 +47,7 @@ class ReceiptService {
             $sth->bindParam(':date_emission', $date_emission, PDO::PARAM_STR);
             $sth->bindParam(':receiptCategory', $category, PDO::PARAM_STR);
             $sth->bindParam(':provider', $provider, PDO::PARAM_STR);
-            $sth->bindParam(':amountTTC', $amountTTC, PDO::PARAM_INT);
+            $sth->bindParam(':amountTTC', $amountTTC, PDO::PARAM_STR);
             $sth->bindParam(':tva', $tva, PDO::PARAM_STR);
             $sth->bindParam(':isChecked', $isChecked, PDO::PARAM_STR);
             $sth->bindParam(':description', $description, PDO::PARAM_STR);
@@ -68,7 +68,7 @@ class ReceiptService {
             $sth->bindParam(':date_emission', $date_emission, PDO::PARAM_STR);
             $sth->bindParam(':receiptCategory', $category, PDO::PARAM_STR);
             $sth->bindParam(':provider', $provider, PDO::PARAM_STR);
-            $sth->bindParam(':amountTTC', $amountTTC, PDO::PARAM_INT);
+            $sth->bindParam(':amountTTC', $amountTTC, PDO::PARAM_STR);
             $sth->bindParam(':tva', $tva, PDO::PARAM_STR);
             $sth->bindParam(':isChecked', $isChecked, PDO::PARAM_STR);
             $sth->bindParam(':description', $description, PDO::PARAM_STR);

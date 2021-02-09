@@ -32,6 +32,7 @@
         $category = filter_input(INPUT_POST, 'receiptCategory');
         $provider = filter_input(INPUT_POST, 'provider');
         $amountTTC = filter_input(INPUT_POST, 'amountTTC');
+        var_dump($amountTTC);
         $tva = filter_input(INPUT_POST, 'tva');
         $description = filter_input(INPUT_POST, 'description');
         filter_input(INPUT_POST, 'ischecked') === "true" ? $isChecked = 1 : $isChecked = 0;
