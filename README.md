@@ -31,18 +31,8 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ## Installer l'application
 - cloner le repo
-- importer les tables dans la base de donnée à l'aide de resources/receiptmanagement.sql
-- créer un fichier dans le projet *php/inc/configDB.php*
-
-```PHP
-    <?php
-    define('DB_HOST', 'localhost');
-    define('DB_NAME', 'receiptmanagement');
-    define('DB_CHARSET', 'utf8');
-    define('DB_USER', 'username');
-    define('DB_PASSWORD', 'password');
-```
-
+- importer les tables dans la base de donnée à l'aide de r*esources/receiptmanagement.sql*
+- copier/coller le fichier *php/inc/configDB.dist.php* dans le même répertoire et appeler la copie *configDB.php*. Le modifier avec les infos de connexion à votre base
 - lors de la première connexion il on vous demande de créer le compte "admin"
 
 ## Techno utilisées 
