@@ -3,30 +3,42 @@
 <form method="get" action="" id="filter-form" class="my-5">
     <div class="form-row flex-wrap">
         <input id="page" name="page" type="hidden" value="receiptList">
+        <div class="col-8 col-md-4 mb-4 pr-4 pb-4">
+            <div class="row">
+                <div class="col-12 pb-4">
+                    <label for="startDate">Date début</label>
+                    <input type="date" class="form-control" id="start-date" name="start-date"  value="<?= $receiptService->getDateFilter('start-date') ?>" required>
+                </div>
+                <div class="col-12">
+                    <label for="endDate">Date fin</label>
+                    <input type="date" class="form-control" id="end-date" name="end-date"  value="<?= $receiptService->getDateFilter('end-date') ?>" required>
+                </div>
+            </div>
+        </div>
         <div class="col-4 col-md-3 pb-4">  
             <legend>Pointé</legend>
             <div class="form-check">
                 <label class="form-check-label">
-                <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-yes" value="isChecked-yes">
+                <input type="radio" class="form-check-input tva-check" name="is-checked" id="isChecked-yes" value="true" <?= $receiptService->getIsCHeckedFilter('true') ?>>
                 Oui
                 </label>
             </div>
             <div class="form-check">
                 <label class="form-check-label">
-                <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-no" value="isChecked-no">
+                <input type="radio" class="form-check-input tva-check" name="is-checked" id="isChecked-no" value="false" <?= $receiptService->getIsCHeckedFilter('false') ?>>
                 Non
                 </label>
             </div>
             <div class="form-check">
                 <label class="form-check-label">
-                <input type="radio" class="form-check-input tva-check" name="isChecked" id="isChecked-all" value="isChecked-all">
+                <input type="radio" class="form-check-input tva-check" name="is-checked" id="isChecked-all" value="both" <?= $receiptService->getIsCHeckedFilter('both') ?>>
                 Les deux
                 </label>
             </div>
         </div>
     </div>
     <div class="form-row">      
-        <div class="col-4 col-md-3 col-lg-2"><button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button></div>
+        <div class="col-4 col-md-3 col-lg-2 "><button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button></div>
         <div class="col-4 col-md-3 col-lg-2">
             <?php // link to the olded receipt not checked
                 $firstReceiptToCheck = $receiptService->getFirstReceiptToCheck();
@@ -69,8 +81,14 @@
     $adjacents = "2";
     // ----------------------------
 
-
-    $receipts =  $receiptService->getFilteredReceiptList($total_records_per_page, $offset); 
+    if ( isset($_GET['is-checked'])) {
+        $filters['isChecked'] = filter_input(INPUT_GET, 'is-checked');
+        $filters['startDate'] = filter_input(INPUT_GET, 'start-date');
+        $filters['endDate'] = filter_input(INPUT_GET, 'end-date');
+    } else {
+        $filters = null;
+    }
+    $receipts =  $receiptService->getFilteredReceiptList($filters, $total_records_per_page, $offset); 
     
     // pagination -------------------------------------------------
 
@@ -90,6 +108,7 @@
         // ================
         // format values ==
         // ================
+        $date_emission = date("d-m-Y", strtotime($receipt['date_emission']));
         $fmt = new NumberFormatter( 'de_DE', NumberFormatter::CURRENCY );
         $amount = $fmt->formatCurrency($receipt['montant_ttc'], "EUR");
         $receipt['checked'] ? $isChecked = "oui" : $isChecked = "non"; 
@@ -105,7 +124,7 @@
         // ===================     
 
         echo "<tr>";
-            echo "<td>" . $receipt['date_emission'] . "</td>";
+            echo "<td>" . $date_emission . "</td>";
             echo "<td>" . $receiptCategory . "</td>";
             echo "<td>" . $receipt['provider'] . "</td>";
             echo "<td>" . $tva . "</td>";
