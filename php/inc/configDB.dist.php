@@ -4,3 +4,4 @@
     define('DB_CHARSET', 'utf8');
     define('DB_USER', '');
     define('DB_PASSWORD', '');
+    

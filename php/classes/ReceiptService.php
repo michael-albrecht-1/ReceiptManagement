@@ -2,14 +2,17 @@
 
 class ReceiptService {
     private $db = null;
+    private $totalReceiptsNumber;
     public $msg = '';
     private $receiptListFilters = '';
     
-    function __construct () {
+    public function __construct ()
+    {
         $this->db = new DBService();
     }
 
-    function selectReceiptFromId($id) {
+    public function selectReceiptFromId($id)
+    {
         $query = 'SELECT * FROM `receipts` WHERE (`id` = :currentId)';
         $values = [':currentId' => $id];
 
@@ -28,7 +31,8 @@ class ReceiptService {
         return $row;
     }
 
-    function getFirstReceiptToCheck() {
+    function getFirstReceiptToCheck()
+    {
         $sql = "SELECT * 
         FROM receipts
         WHERE checked=false
@@ -38,7 +42,8 @@ class ReceiptService {
         return $this->db->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
     }
 
-    function createReceipt($photo_name, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description) {
+    function createReceipt($photo_name, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description)
+    {
         try {
             $sth = $this->db->pdo->prepare('INSERT INTO `receipts`(`photo_name`, `date_emission`, `category`, `provider`, `montant_ttc`, `tva`, `checked`, `description`) VALUES (:photo_name, :date_emission, :receiptCategory, :provider, :amountTTC, :tva, :isChecked, :description)');
                     
@@ -58,7 +63,8 @@ class ReceiptService {
         return true;       
     }
 
-    function updateReceipt($id, $photo_name, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description) {
+    function updateReceipt($id, $photo_name, $date_emission, $category, $provider, $amountTTC, $tva, $isChecked, $description)
+    {
         try {
             $sth = $this->db->pdo->prepare('UPDATE `receipts` SET `photo_name`=:photo_name, `date_emission`=:date_emission, `category`=:receiptCategory, `provider`=:provider, `montant_ttc`=:amountTTC, `tva`=:tva, `checked`=:isChecked, `description`=:description WHERE `receipts`.`id` = :id');
 
@@ -98,7 +104,8 @@ class ReceiptService {
 
     }
 
-    function getLinkWithParamsFromRow($row) {
+    function getLinkWithParamsFromRow($row)
+    {
 
         $category = formatCategory($row['category']);
         $tva = formatTva($row['tva']);
@@ -118,48 +125,81 @@ class ReceiptService {
                     '&description=' . $description;
     }
 
-    function getFilteredReceiptList($filters, $total_records_per_page, $offset) {
-
-        
+    public function getFilteredReceiptList($filters, $total_records_per_page, $offset)
+    {
         if ( is_array($filters) ) 
         {
             extract($filters);
-            
-            $_SESSION['isChecked'] = $isChecked;
-            
-            if ( $isChecked == 'true') {
-                $checkedSQL = '`checked`=true';
-            } elseif ( $isChecked == 'false') {
-                $checkedSQL = "`checked`=false";
-            } 
-            else {
-                $checkedSQL = "`checked`=true OR `checked`=false";
-            }
-            
-            $formatedStartDate = date("Ymd", strtotime($startDate));
-            $formatedEndDate = date("Ymd", strtotime($endDate));
-
-
-            $this->receiptListFilters = 'WHERE (' . $checkedSQL . ') AND `date_emission` > ' . $formatedStartDate . ' AND `date_emission` < ' . $formatedEndDate ;
-
-            $sql = "SELECT * FROM `receipts` $this->receiptListFilters ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
-        } elseif ( isset($_SESSION['isChecked']) ){
-            $this->receiptListFilters = 'WHERE ' . $_SESSION['isChecked'];
-            $sql = "SELECT * FROM `receipts` $this->receiptListFilters ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
-        } else {
-            $sql = "SELECT * FROM `receipts` ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
+            $_SESSION['start-date'] = $startDate;
+            $_SESSION['end-date'] = $endDate;
+            $_SESSION['is-checked'] = $isChecked;
+        } 
+        
+        if ( isset($_SESSION['is-checked']) ){
+            $formatedStartDate = date("Ymd", strtotime($_SESSION['start-date']));
+            $formatedEndDate = date("Ymd", strtotime($_SESSION['end-date']));
+            $this->getReceiptFilters($formatedStartDate, $formatedEndDate, $_SESSION['is-checked']);
         }
-
+        $this->setTotalReceiptNumber();
+        $sql = "SELECT * FROM `receipts` $this->receiptListFilters ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
         return $this->db->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function getTotalReceiptsNumber() {
-        if ( isset($_GET['isChecked']) || isset($_COOKIE['isChecked']) ){
-            $sql = "SELECT COUNT(*) As total_records FROM `receipts` $this->receiptListFilters";
-        } else {
-            $sql = "SELECT COUNT(*) As total_records FROM `receipts`";
+    private function getReceiptFilters($formatedStartDate, $formatedEndDate, $isChecked)
+    {
+        if ( $_SESSION['is-checked'] == 'true') {
+            $checkedSQL = '`checked`=true';
+        } elseif ( $_SESSION['is-checked'] == 'false') {
+            $checkedSQL = "`checked`=false";
+        } 
+        else {
+            $checkedSQL = "`checked`=true OR `checked`=false";
         }
-    
-        return $this->db->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+
+        $this->receiptListFilters = 'WHERE (' . $checkedSQL . ') AND `date_emission` >= ' . $formatedStartDate . ' AND `date_emission` <= ' . $formatedEndDate ;
+    }
+
+    private function setTotalReceiptNumber()
+    {
+        $sql = "SELECT COUNT(*) As total_records FROM `receipts` $this->receiptListFilters";
+        $this->totalReceiptsNumber = $this->db->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalReceiptsNumber()
+    {
+        return $this->totalReceiptsNumber;
+    }
+
+    public function getDateFilter($date)
+    {
+        if ( isset($_GET[$date]) ){
+            return  $_GET[$date];
+        } else if ( isset($_SESSION[$date]) ){
+            return  $_SESSION[$date];
+        } else {
+            if ( $date == 'start-date') {
+                return date("Y-m-d", mktime(0, 0, 0, 1, 1, 2000));
+            } else if ($date == 'end-date'){
+                return date("Y-m-d");
+            }
+        }
+    }
+
+    public function getIsCHeckedFilter($value)
+    {
+        if ( isset($_GET['is-checked']) ){
+            if (  $_GET['is-checked'] == $value){
+                return  'checked';
+            }
+        } else if ( isset($_SESSION['is-checked']) ){
+            if (  $_SESSION['is-checked'] == $value){
+                return  'checked';
+            }
+        } else {
+            if ( $value == 'both') {
+                return  'checked';
+            } 
+            return '';
+        }
     }
 }
