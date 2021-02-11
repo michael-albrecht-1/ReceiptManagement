@@ -7,7 +7,8 @@ let filter = {
     // extract the isChecked value from the cookie and update the DOM
     loadIsCheckedCheckbox: () => {
         
-        // extract from the cookies 
+        //! extract from the cookies - > TO FIX WE DONT USE COKKIES ANYMORE
+        /*
         let cookieCheckbox;
         document.cookie.split("; ").forEach( e => {
             if (e.startsWith('isCheckedJS')){
@@ -24,7 +25,7 @@ let filter = {
                 element.checked = true;
             }
         });
-
+        */
     }
 }
 

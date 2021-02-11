@@ -2,12 +2,11 @@
 
 class ReceiptService {
     private $db = null;
-    public $msg = "";
-    private $receiptListFilters;
+    public $msg = '';
+    private $receiptListFilters = '';
     
     function __construct () {
         $this->db = new DBService();
-        $this->receiptListFilters = 0;
     }
 
     function selectReceiptFromId($id) {
@@ -119,24 +118,33 @@ class ReceiptService {
                     '&description=' . $description;
     }
 
-    function getFilteredReceiptList($total_records_per_page, $offset) {
-        if (isset($_GET['isChecked']) ) 
+    function getFilteredReceiptList($filters, $total_records_per_page, $offset) {
+
+        
+        if ( is_array($filters) ) 
         {
-            $isChecked = $_GET['isChecked'];
-            if ( $isChecked == "isChecked-yes") {
-                $checkedSQL = "checked=true";
-            } elseif ( $isChecked == "isChecked-no") {
-                $checkedSQL = "checked=false";
+            extract($filters);
+            
+            $_SESSION['isChecked'] = $isChecked;
+            
+            if ( $isChecked == 'true') {
+                $checkedSQL = '`checked`=true';
+            } elseif ( $isChecked == 'false') {
+                $checkedSQL = "`checked`=false";
             } 
             else {
-                $checkedSQL = "checked=true OR checked=false";
+                $checkedSQL = "`checked`=true OR `checked`=false";
             }
-            setcookie("isChecked", $checkedSQL,  time() + 2592000);
-            setcookie("isCheckedJS", $_GET['isChecked'],  time() + 2592000);
-            $this->receiptListFilters = 'WHERE ' . $checkedSQL;
+            
+            $formatedStartDate = date("Ymd", strtotime($startDate));
+            $formatedEndDate = date("Ymd", strtotime($endDate));
+
+
+            $this->receiptListFilters = 'WHERE (' . $checkedSQL . ') AND `date_emission` > ' . $formatedStartDate . ' AND `date_emission` < ' . $formatedEndDate ;
+
             $sql = "SELECT * FROM `receipts` $this->receiptListFilters ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
-        } elseif ( isset($_COOKIE['isChecked']) ){
-            $this->receiptListFilters = 'WHERE ' . $_COOKIE["isChecked"];
+        } elseif ( isset($_SESSION['isChecked']) ){
+            $this->receiptListFilters = 'WHERE ' . $_SESSION['isChecked'];
             $sql = "SELECT * FROM `receipts` $this->receiptListFilters ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
         } else {
             $sql = "SELECT * FROM `receipts` ORDER BY `date_emission` DESC, `id` DESC LIMIT $offset, $total_records_per_page";
