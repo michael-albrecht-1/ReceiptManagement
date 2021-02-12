@@ -17,7 +17,7 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 ### Liste des tickets
 
 - affiche un tableau avec la date d'emission du ticket, le type de ticket (restaurant, gasoil, etc..), le fournisseur, le taux de TVA, le total TTC, si les tickets ont été pointés ou pas et une description optionnelle
-- on peut si ils sont pointés ou non (par défaut on affiche tout)
+- on peut filtrer par date ou si ils sont pointés.
 - un bouton pointer renvoie vers le détail du plus ancien ticket non pointé
 - un bouton bleu "pointer" permet d'afficher le ticket le plus ancien avec le plus petit id qui n'est pas pointé 
 

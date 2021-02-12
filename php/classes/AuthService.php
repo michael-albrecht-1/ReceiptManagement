@@ -61,7 +61,7 @@ class AuthService {
         catch (PDOException $e)
         {
         /* Query error. */
-        $this->msg = sendMessage("Query error.");
+        $this->msg = sendMessage("Query error.", 'danger');
         die();
         }
 
@@ -74,11 +74,11 @@ class AuthService {
             {
                 return true;
             } else {
-                $this->msg = sendMessage("Le mot de passe est erronné ! ");
+                $this->msg = sendMessage("Le mot de passe est erronné ! ", 'danger');
                 return false;
             }
         } else {
-            $this->msg = sendMessage("Cet utilisateur n'existe pas ! ");
+            $this->msg = sendMessage("Cet utilisateur n'existe pas ! ", 'danger');
             return false;
         } 
     }
