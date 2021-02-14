@@ -4,7 +4,6 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 ## To DO
 
 - afficher la valeur totale de TVA concerrespondant à la sélection dans la liste des tickets
-- export CSV : DATE // TYPE // FOURNISSEUR // MONTANT HT // TAUX TVA // MONTANT TVA // MONTANT TTC // VALIDATION FINAL?
 
 ## Fonctionnalitées
 
@@ -27,7 +26,7 @@ Un bouton bleu "pointer" permet d'afficher le ticket le plus ancien avec le plus
 
 #### Export comptable
 
-Cette fonctionnalité permet d'exporter un fichier au format *xls*. Le fichier contient 7 colonnes :
+Cette fonctionnalité permet d'exporter un fichier au format *xls*. Un ticket doit être pointé pour pouvoir être exporté. Le fichier contient 7 colonnes :
 
 - date-emission : date d'émission du ticket
 - journal_achat : journal d'achat concerné

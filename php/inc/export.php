@@ -57,38 +57,39 @@
                     break;
             }
 
-            //! TTC            
-            $excel .= 
-                $row['date_emission'] . "\t" .             
-                "ac\t" .                                 
-                $providerAccount . "\t" .                         
-                $pieceNumber . "\t" .                        
-                $row['provider'] . "\t" .                   
-                "0" . "\t" .              
-                $row['montant_ttc'] . "\n";   
+            if ($row['checked'] == true) {
+                //! TTC            
+                $excel .= 
+                    $row['date_emission'] . "\t" .             
+                    "ac\t" .                                 
+                    $providerAccount . "\t" .                         
+                    $pieceNumber . "\t" .                        
+                    $row['provider'] . "\t" .                   
+                    "0" . "\t" .              
+                    $row['montant_ttc'] . "\n";   
 
-            //! TVA if the receipt isnt EXO
-            if ($row['tva'] != 'tva1') {           
-                $excel  .=                    
-                    $row['date_emission'] . "\t" .              
-                    "ac\t" .                                  
-                    "44566" . "\t" .                        
-                    $pieceNumber . "\t" .                       
-                    $row['provider'] . "\t" .                  
-                    $tvaAmount . "\t" .             
-                    "0" . "\n";                    
-                } 
-            
-            // ! HT
-            $excel .=
-                $row['date_emission'] . "\t" .             
-                "ac\t" .                                   
-                $companyAccount . "\t" .                         
-                $pieceNumber . "\t" .                     
-                $row['provider'] . "\t" .                 
-                $credit . "\t" .              
-                "0" . "\n";
-             
+                //! TVA if the receipt isnt EXO
+                if ($row['tva'] != 'tva1') {           
+                    $excel  .=                    
+                        $row['date_emission'] . "\t" .              
+                        "ac\t" .                                  
+                        "44566" . "\t" .                        
+                        $pieceNumber . "\t" .                       
+                        $row['provider'] . "\t" .                  
+                        $tvaAmount . "\t" .             
+                        "0" . "\n";                    
+                    } 
+                
+                // ! HT
+                $excel .=
+                    $row['date_emission'] . "\t" .             
+                    "ac\t" .                                   
+                    $companyAccount . "\t" .                         
+                    $pieceNumber . "\t" .                     
+                    $row['provider'] . "\t" .                 
+                    $credit . "\t" .              
+                    "0" . "\n";        
+            } 
 
         }
         
