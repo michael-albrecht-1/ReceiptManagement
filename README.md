@@ -3,9 +3,7 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ## To DO
 
-- ajouter des filtres de date sur la page de liste des tickets ?
 - afficher la valeur totale de TVA concerrespondant à la sélection dans la liste des tickets
-- export CSV : DATE // TYPE // FOURNISSEUR // MONTANT HT // TAUX TVA // MONTANT TVA // MONTANT TTC // VALIDATION FINAL?
 
 ## Fonctionnalitées
 
@@ -16,10 +14,34 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ### Liste des tickets
 
-- affiche un tableau avec la date d'emission du ticket, le type de ticket (restaurant, gasoil, etc..), le fournisseur, le taux de TVA, le total TTC, si les tickets ont été pointés ou pas et une description optionnelle
-- on peut filtrer par date ou si ils sont pointés.
-- un bouton pointer renvoie vers le détail du plus ancien ticket non pointé
-- un bouton bleu "pointer" permet d'afficher le ticket le plus ancien avec le plus petit id qui n'est pas pointé 
+#### Filtrer les tickets à afficher
+
+Un tableau avec la juste des tickets avec leur date d'emission, leur type (restaurant, gasoil, etc..), le fournisseur, le taux de TVA, le total TTC, si les tickets ont été pointés ou pas et une description optionnelle
+
+On peut les filtrer par date ou si ils sont pointés.
+
+#### Pointage
+
+Un bouton bleu "pointer" permet d'afficher le ticket le plus ancien avec le plus petit id qui n'est pas pointé.
+
+#### Export comptable
+
+Cette fonctionnalité permet d'exporter un fichier au format *xls*. Un ticket doit être pointé pour pouvoir être exporté. Le fichier contient 7 colonnes :
+
+- date-emission : date d'émission du ticket
+- journal_achat : journal d'achat concerné
+- compte : le compte comptable concerné (plus de détails plus bas)
+- numero : le numéro de pièce qui est formaté de la manière suivante : "numéroTicketExporté"."moisEmission"
+- fournisseur : le nom de l'entreprise émetrice du ticket
+- credit : le montant si c'est une ligne de crédit
+- debit :  le montant si c'est une ligne de débit
+
+Chaque ticket donne lieu plusieurs lignes lors de l'export :
+- une ligne de débit sur le compte du fournisseur avec le montant TTC payé
+- une ligne pour la TVA qui n'est présente *que* si le ticket n'est pas exonéré
+- une ligne de crédit sur le compte de comptable associé au type de dépense avec le montant HT
+
+Les correspondances sont configurables dans le fichier *export.php*.
 
 ### Ajout/modification d'un ticket
 
