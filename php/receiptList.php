@@ -1,3 +1,45 @@
+<?php
+
+    // Pagination ----------------
+    $total_records_per_page = 6;
+    if (isset($_GET['page_no']) && $_GET['page_no']!="") {
+    $page_no = $_GET['page_no'];
+    } else {
+        $page_no = 1;
+        }
+
+    $offset = ($page_no-1) * $total_records_per_page;
+    $previous_page = $page_no - 1;
+    $next_page = $page_no + 1;
+    $adjacents = "2";
+    // ----------------------------
+
+    // handle filters and generate list
+    if ( isset($_GET['is-checked'])) {
+        $filters['isChecked'] = filter_input(INPUT_GET, 'is-checked');
+        $filters['startDate'] = filter_input(INPUT_GET, 'start-date');
+        $filters['endDate'] = filter_input(INPUT_GET, 'end-date');
+    } else {
+        $filters = null;
+    }
+    $receipts =  $receiptService->getFilteredReceiptList($filters, $total_records_per_page, $offset); 
+    
+    if ( isset($_GET['export']) ) {
+        $receiptsToExport = $receiptService->getFilteredReceiptList($filters, 1000, 0);
+        $_SESSION['receiptsToExport'] = $receiptsToExport;
+        header("Location: php/inc/export.php");
+
+    }
+    // --------------------------------
+
+    // pagination -------------------------------------------------
+    $totalReceiptsNumber = $receiptService->getTotalReceiptsNumber();
+    $totalReceiptsNumber = $totalReceiptsNumber['total_records'];
+    $total_no_of_pages = ceil($totalReceiptsNumber / $total_records_per_page);
+    $second_last = $total_no_of_pages - 1; // total pages minus 1
+    //----------------------------------------------------------------
+    ?>
+
 <h1>Liste des tickets</h1>
 
 <form method="get" action="" id="filter-form" class="my-5">
@@ -19,26 +61,26 @@
             <legend>Pointé</legend>
             <div class="form-check">
                 <label class="form-check-label">
-                <input type="radio" class="form-check-input tva-check" name="is-checked" id="isChecked-yes" value="true" <?= $receiptService->getIsCHeckedFilter('true') ?>>
+                <input type="radio" class="form-check-input tva-check" name="is-checked" id="isChecked-yes" value="true" <?= $receiptService->getIsCheckedFilter('true') ?>>
                 Oui
                 </label>
             </div>
             <div class="form-check">
                 <label class="form-check-label">
-                <input type="radio" class="form-check-input tva-check" name="is-checked" id="isChecked-no" value="false" <?= $receiptService->getIsCHeckedFilter('false') ?>>
+                <input type="radio" class="form-check-input tva-check" name="is-checked" id="isChecked-no" value="false" <?= $receiptService->getIsCheckedFilter('false') ?>>
                 Non
                 </label>
             </div>
             <div class="form-check">
                 <label class="form-check-label">
-                <input type="radio" class="form-check-input tva-check" name="is-checked" id="isChecked-all" value="both" <?= $receiptService->getIsCHeckedFilter('both') ?>>
+                <input type="radio" class="form-check-input tva-check" name="is-checked" id="isChecked-all" value="both" <?= $receiptService->getIsCheckedFilter('both') ?>>
                 Les deux
                 </label>
             </div>
         </div>
     </div>
     <div class="form-row">      
-        <div class="col-4 col-md-3 col-lg-2 "><button type="submit" class="btn btn-primary submitListReceiptFilters">Valider</button></div>
+        <div class="col-4 col-md-3 col-lg-2 "><button type="submit" name ="filter" class="btn btn-primary submitListReceiptFilters">Valider</button></div>
         <div class="col-4 col-md-3 col-lg-2">
             <?php // link to the olded receipt not checked
                 $firstReceiptToCheck = $receiptService->getFirstReceiptToCheck();
@@ -46,9 +88,9 @@
                     $firstReceiptToCheckLink = $receiptService->getLinkWithParamsFromRow($firstReceiptToCheck);
                     echo '<a href="' . $firstReceiptToCheckLink . '"><button type="button" class="btn btn-info submitListReceiptFilters">Pointer</button></a>';
                 }
-
             ?>
         </div>
+        <div class="col-4 col-md-3 col-lg-2 "><button type="submit" name ="export" class="btn btn-info submitListReceiptFilters">Exporter</button></div>        
     </div>
 </form>
 
@@ -67,40 +109,6 @@
   </thead>
     <?php
 
-    // pagination ----------------
-    $total_records_per_page = 6;
-    if (isset($_GET['page_no']) && $_GET['page_no']!="") {
-    $page_no = $_GET['page_no'];
-    } else {
-        $page_no = 1;
-        }
-
-    $offset = ($page_no-1) * $total_records_per_page;
-    $previous_page = $page_no - 1;
-    $next_page = $page_no + 1;
-    $adjacents = "2";
-    // ----------------------------
-
-    if ( isset($_GET['is-checked'])) {
-        $filters['isChecked'] = filter_input(INPUT_GET, 'is-checked');
-        $filters['startDate'] = filter_input(INPUT_GET, 'start-date');
-        $filters['endDate'] = filter_input(INPUT_GET, 'end-date');
-    } else {
-        $filters = null;
-    }
-    $receipts =  $receiptService->getFilteredReceiptList($filters, $total_records_per_page, $offset); 
-    
-    // pagination -------------------------------------------------
-
-
-
-    $totalReceiptsNumber = $receiptService->getTotalReceiptsNumber();
-
-    
-    $totalReceiptsNumber = $totalReceiptsNumber['total_records'];
-    $total_no_of_pages = ceil($totalReceiptsNumber / $total_records_per_page);
-    $second_last = $total_no_of_pages - 1; // total pages minus 1
-    //----------------------------------------------------------------
 
 
     foreach ($receipts as $receipt) { 

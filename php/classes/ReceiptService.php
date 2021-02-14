@@ -185,7 +185,7 @@ class ReceiptService {
         }
     }
 
-    public function getIsCHeckedFilter($value)
+    public function getIsCheckedFilter($value)
     {
         if ( isset($_GET['is-checked']) ){
             if (  $_GET['is-checked'] == $value){

@@ -3,7 +3,6 @@ Application de saisie de tickets de caisse et d'export en comptabilité.
 
 ## To DO
 
-- ajouter des filtres de date sur la page de liste des tickets ?
 - afficher la valeur totale de TVA concerrespondant à la sélection dans la liste des tickets
 - export CSV : DATE // TYPE // FOURNISSEUR // MONTANT HT // TAUX TVA // MONTANT TVA // MONTANT TTC // VALIDATION FINAL?
 
